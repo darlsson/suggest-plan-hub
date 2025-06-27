@@ -10,8 +10,9 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useAppData } from '@/hooks/useAppData';
 import { RoadmapItem, Suggestion } from '@/types';
-import { Plus, List, Kanban, Calendar, User, Target, Clock } from 'lucide-react';
+import { Plus, List, Kanban, Calendar, User, Target, Clock, Eye, Edit } from 'lucide-react';
 import { RoadmapItemForm } from '@/components/admin/RoadmapItemForm';
+import { RoadmapItemDialog } from '@/components/admin/RoadmapItemDialog';
 
 type ViewMode = 'kanban' | 'list';
 
@@ -52,9 +53,14 @@ export default function AdminRoadmap() {
     setSelectedItem(item);
   };
 
-  const handleEditItem = (item: RoadmapItem) => {
+  const handleViewItem = (e: React.MouseEvent, item: RoadmapItem) => {
+    e.stopPropagation();
+    setSelectedItem(item);
+  };
+
+  const handleEditItem = (e: React.MouseEvent, item: RoadmapItem) => {
+    e.stopPropagation();
     setEditingItem(item);
-    setSelectedItem(null);
   };
 
   const handleUpdateItem = (updates: Partial<RoadmapItem>) => {
@@ -95,6 +101,24 @@ export default function AdminRoadmap() {
                           {item.priority}
                         </Badge>
                         <span className="text-xs text-gray-500">{item.quarter}</span>
+                      </div>
+                      <div className="flex items-center justify-end space-x-2 pt-2">
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={(e) => handleViewItem(e, item)}
+                        >
+                          <Eye className="h-3 w-3 mr-1" />
+                          View
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={(e) => handleEditItem(e, item)}
+                        >
+                          <Edit className="h-3 w-3 mr-1" />
+                          Edit
+                        </Button>
                       </div>
                     </div>
                   </CardContent>
@@ -141,6 +165,24 @@ export default function AdminRoadmap() {
                       {item.relatedSuggestions.length} linked
                     </span>
                   </div>
+                </div>
+                <div className="flex items-center space-x-2 ml-4">
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={(e) => handleViewItem(e, item)}
+                  >
+                    <Eye className="h-4 w-4 mr-1" />
+                    View
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={(e) => handleEditItem(e, item)}
+                  >
+                    <Edit className="h-4 w-4 mr-1" />
+                    Edit
+                  </Button>
                 </div>
               </div>
             </CardContent>
@@ -189,58 +231,11 @@ export default function AdminRoadmap() {
         {viewMode === 'kanban' ? renderKanbanView() : renderListView()}
 
         {/* View Item Dialog */}
-        <Dialog open={!!selectedItem} onOpenChange={(open) => !open && setSelectedItem(null)}>
-          <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
-            {selectedItem && (
-              <>
-                <DialogHeader>
-                  <DialogTitle className="flex items-center justify-between">
-                    {selectedItem.title}
-                    <Button onClick={() => handleEditItem(selectedItem)}>Edit</Button>
-                  </DialogTitle>
-                </DialogHeader>
-                <div className="space-y-4">
-                  <div className="flex gap-3">
-                    <Badge className={getStatusColor(selectedItem.status)}>
-                      {selectedItem.status}
-                    </Badge>
-                    <Badge className={getPriorityColor(selectedItem.priority)}>
-                      {selectedItem.priority} priority
-                    </Badge>
-                  </div>
-                  <div>
-                    <h4 className="font-medium mb-2">Description</h4>
-                    <p className="text-gray-700">{selectedItem.description}</p>
-                  </div>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <h4 className="font-medium mb-1">Quarter</h4>
-                      <p className="text-sm text-gray-600">{selectedItem.quarter}</p>
-                    </div>
-                    {selectedItem.estimatedCompletion && (
-                      <div>
-                        <h4 className="font-medium mb-1">Estimated Completion</h4>
-                        <p className="text-sm text-gray-600">
-                          {new Date(selectedItem.estimatedCompletion).toLocaleDateString()}
-                        </p>
-                      </div>
-                    )}
-                    {selectedItem.assignedTo && (
-                      <div>
-                        <h4 className="font-medium mb-1">Assigned To</h4>
-                        <p className="text-sm text-gray-600">{selectedItem.assignedTo}</p>
-                      </div>
-                    )}
-                    <div>
-                      <h4 className="font-medium mb-1">Related Suggestions</h4>
-                      <p className="text-sm text-gray-600">{selectedItem.relatedSuggestions.length} linked</p>
-                    </div>
-                  </div>
-                </div>
-              </>
-            )}
-          </DialogContent>
-        </Dialog>
+        <RoadmapItemDialog
+          roadmapItem={selectedItem}
+          open={!!selectedItem}
+          onOpenChange={(open) => !open && setSelectedItem(null)}
+        />
 
         {/* Edit Item Dialog */}
         <Dialog open={!!editingItem} onOpenChange={(open) => !open && setEditingItem(null)}>
