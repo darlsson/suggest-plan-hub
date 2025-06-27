@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Layout } from '@/components/layout/Layout';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -6,15 +5,18 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Filter, Search, BarChart3, Plus } from 'lucide-react';
 import { useAppData } from '@/hooks/useAppData';
 import { Suggestion } from '@/types';
 import { SuggestionManagementDialog } from '@/components/admin/SuggestionManagementDialog';
+import { SuggestionForm } from '@/components/suggestions/SuggestionForm';
 import { formatDate } from '@/utils/auth';
 
 export default function AdminSuggestions() {
   const { suggestions } = useAppData();
   const [selectedSuggestion, setSelectedSuggestion] = useState<Suggestion | null>(null);
+  const [isNewSuggestionOpen, setIsNewSuggestionOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const [typeFilter, setTypeFilter] = useState('all');
@@ -61,8 +63,11 @@ export default function AdminSuggestions() {
   };
 
   const handleNewSuggestion = () => {
-    // Mock function for now
-    console.log('New Suggestion clicked');
+    setIsNewSuggestionOpen(true);
+  };
+
+  const handleNewSuggestionSuccess = () => {
+    setIsNewSuggestionOpen(false);
   };
 
   return (
@@ -221,6 +226,16 @@ export default function AdminSuggestions() {
           open={!!selectedSuggestion}
           onOpenChange={(open) => !open && setSelectedSuggestion(null)}
         />
+
+        {/* New Suggestion Dialog */}
+        <Dialog open={isNewSuggestionOpen} onOpenChange={setIsNewSuggestionOpen}>
+          <DialogContent className="sm:max-w-[500px]">
+            <DialogHeader>
+              <DialogTitle>Create New Suggestion</DialogTitle>
+            </DialogHeader>
+            <SuggestionForm onSuccess={handleNewSuggestionSuccess} />
+          </DialogContent>
+        </Dialog>
       </div>
     </Layout>
   );
