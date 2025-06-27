@@ -1,0 +1,169 @@
+
+import { useState } from 'react';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Badge } from '@/components/ui/badge';
+import { Suggestion } from '@/types';
+import { useAppData } from '@/hooks/useAppData';
+import { useToast } from '@/hooks/use-toast';
+import { formatDate } from '@/utils/auth';
+
+interface SuggestionManagementDialogProps {
+  suggestion: Suggestion | null;
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+}
+
+export function SuggestionManagementDialog({ 
+  suggestion, 
+  open, 
+  onOpenChange 
+}: SuggestionManagementDialogProps) {
+  const { updateSuggestion } = useAppData();
+  const { toast } = useToast();
+  const [status, setStatus] = useState<string>('');
+  const [adminNotes, setAdminNotes] = useState('');
+  const [tags, setTags] = useState('');
+
+  // Reset form when suggestion changes
+  useState(() => {
+    if (suggestion) {
+      setStatus(suggestion.status);
+      setAdminNotes(suggestion.adminNotes || '');
+      setTags(''); // Add tags field to Suggestion type if needed
+    }
+  }, [suggestion]);
+
+  if (!suggestion) return null;
+
+  const handleSave = () => {
+    updateSuggestion(suggestion.id, {
+      status: status as any,
+      adminNotes: adminNotes.trim() || undefined,
+    });
+
+    toast({
+      title: "Suggestion Updated",
+      description: "The suggestion has been successfully updated.",
+    });
+
+    onOpenChange(false);
+  };
+
+  const statusColors = {
+    pending: 'bg-yellow-100 text-yellow-800',
+    approved: 'bg-green-100 text-green-800',
+    'in-progress': 'bg-blue-100 text-blue-800',
+    completed: 'bg-purple-100 text-purple-800',
+    rejected: 'bg-red-100 text-red-800',
+  };
+
+  const priorityColors = {
+    low: 'bg-gray-100 text-gray-800',
+    medium: 'bg-orange-100 text-orange-800',
+    high: 'bg-red-100 text-red-800',
+  };
+
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+        <DialogHeader>
+          <DialogTitle className="text-xl">{suggestion.title}</DialogTitle>
+          <DialogDescription>
+            Manage this suggestion and provide feedback
+          </DialogDescription>
+        </DialogHeader>
+
+        <div className="space-y-6">
+          {/* Suggestion Details */}
+          <div className="space-y-4">
+            <div>
+              <h4 className="font-semibold mb-2">Description</h4>
+              <p className="text-gray-700 bg-gray-50 p-3 rounded-lg">
+                {suggestion.description}
+              </p>
+            </div>
+
+            <div className="flex gap-4 text-sm text-gray-600">
+              <span>Author: {suggestion.authorName}</span>
+              <span>Created: {formatDate(suggestion.createdAt)}</span>
+              <span>Votes: {suggestion.votes}</span>
+            </div>
+
+            <div className="flex gap-2">
+              <Badge className={statusColors[suggestion.status]}>
+                {suggestion.status.replace('-', ' ')}
+              </Badge>
+              <Badge className={priorityColors[suggestion.priority]}>
+                {suggestion.priority} priority
+              </Badge>
+              <Badge variant="outline">
+                {suggestion.category}
+              </Badge>
+            </div>
+          </div>
+
+          {/* Management Form */}
+          <div className="space-y-4 border-t pt-4">
+            <div>
+              <Label htmlFor="status">Status</Label>
+              <Select value={status} onValueChange={setStatus}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select status" />
+                </SelectTrigger>
+                <SelectContent className="bg-white">
+                  <SelectItem value="pending">Pending</SelectItem>
+                  <SelectItem value="approved">Approved</SelectItem>
+                  <SelectItem value="in-progress">In Progress</SelectItem>
+                  <SelectItem value="completed">Completed</SelectItem>
+                  <SelectItem value="rejected">Rejected</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div>
+              <Label htmlFor="admin-notes">Admin Notes</Label>
+              <Textarea
+                id="admin-notes"
+                value={adminNotes}
+                onChange={(e) => setAdminNotes(e.target.value)}
+                placeholder="Add feedback, reasoning, or next steps..."
+                rows={4}
+              />
+            </div>
+
+            <div>
+              <Label htmlFor="tags">Tags (comma-separated)</Label>
+              <Textarea
+                id="tags"
+                value={tags}
+                onChange={(e) => setTags(e.target.value)}
+                placeholder="ui, backend, mobile, etc."
+                rows={2}
+              />
+            </div>
+          </div>
+        </div>
+
+        <DialogFooter>
+          <Button variant="outline" onClick={() => onOpenChange(false)}>
+            Cancel
+          </Button>
+          <Button onClick={handleSave}>
+            Save Changes
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+}

@@ -5,23 +5,27 @@ import { useAppData } from '@/hooks/useAppData';
 import { useAuth } from '@/hooks/useAuth';
 import { Users, FileText, Calendar, CheckCircle, Clock, AlertCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { useState } from 'react';
+import { SuggestionManagementDialog } from '@/components/admin/SuggestionManagementDialog';
+import { Suggestion } from '@/types';
 
 export default function AdminDashboard() {
   const { suggestions, roadmapItems, users } = useAppData();
-  const { switchUserView } = useAuth();
+  const { auth } = useAuth();
+  const [selectedSuggestion, setSelectedSuggestion] = useState<Suggestion | null>(null);
 
   const pendingSuggestions = suggestions.filter(s => s.status === 'pending');
   const inProgressItems = roadmapItems.filter(item => item.status === 'in-progress');
   const totalEmployees = users.filter(u => u.role === 'employee').length;
+  const activeRoadmapItem = roadmapItems.find(item => item.status === 'in-progress');
 
   const stats = [
     {
-      title: 'Total Users',
-      value: users.length,
-      description: `${totalEmployees} employees, ${users.length - totalEmployees} admins`,
-      icon: Users,
-      color: 'text-blue-600',
+      title: 'Current Active Item',
+      value: activeRoadmapItem ? activeRoadmapItem.title : 'None',
+      description: activeRoadmapItem ? `Due: ${activeRoadmapItem.quarter}` : 'No active roadmap items',
+      icon: Calendar,
+      color: 'text-purple-600',
     },
     {
       title: 'Pending Suggestions',
@@ -50,8 +54,8 @@ export default function AdminDashboard() {
     .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
     .slice(0, 5);
 
-  const handleUserViewSwitch = (userId: string) => {
-    switchUserView(userId);
+  const handleSuggestionClick = (suggestion: Suggestion) => {
+    setSelectedSuggestion(suggestion);
   };
 
   return (
@@ -67,25 +71,6 @@ export default function AdminDashboard() {
               <p className="text-gray-600">
                 Manage users, suggestions, and roadmap items.
               </p>
-            </div>
-            <div className="flex items-center space-x-4">
-              <div>
-                <label className="text-sm font-medium text-gray-700 block mb-2">
-                  View as User:
-                </label>
-                <Select onValueChange={handleUserViewSwitch}>
-                  <SelectTrigger className="w-48">
-                    <SelectValue placeholder="Switch user view" />
-                  </SelectTrigger>
-                  <SelectContent className="bg-white">
-                    {users.filter(u => u.role === 'employee').map((user) => (
-                      <SelectItem key={user.id} value={user.id}>
-                        {user.name} ({user.email})
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
             </div>
           </div>
         </div>
@@ -116,14 +101,18 @@ export default function AdminDashboard() {
             <CardHeader>
               <CardTitle>Recent Suggestions</CardTitle>
               <CardDescription>
-                Latest submissions from users
+                Latest submissions from users (click to manage)
               </CardDescription>
             </CardHeader>
             <CardContent>
               {recentSuggestions.length > 0 ? (
                 <div className="space-y-4">
                   {recentSuggestions.map((suggestion) => (
-                    <div key={suggestion.id} className="flex items-start space-x-3 p-3 bg-gray-50 rounded-lg">
+                    <div 
+                      key={suggestion.id} 
+                      className="flex items-start space-x-3 p-3 bg-gray-50 rounded-lg cursor-pointer hover:bg-gray-100 transition-colors"
+                      onClick={() => handleSuggestionClick(suggestion)}
+                    >
                       <div className="flex-1 min-w-0">
                         <p className="font-medium text-gray-900 truncate">
                           {suggestion.title}
@@ -177,6 +166,13 @@ export default function AdminDashboard() {
             </CardContent>
           </Card>
         </div>
+
+        {/* Suggestion Management Dialog */}
+        <SuggestionManagementDialog
+          suggestion={selectedSuggestion}
+          open={!!selectedSuggestion}
+          onOpenChange={(open) => !open && setSelectedSuggestion(null)}
+        />
       </div>
     </Layout>
   );
