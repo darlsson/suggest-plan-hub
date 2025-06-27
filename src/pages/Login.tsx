@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -7,13 +6,14 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useAuth } from '@/hooks/useAuth';
 import { useToast } from '@/hooks/use-toast';
+import { canAccessAdminRoutes } from '@/utils/auth';
 
 export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   
-  const { login } = useAuth();
+  const { login, auth } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -24,7 +24,9 @@ export default function Login() {
     try {
       const success = await login(email, password);
       if (success) {
-        navigate('/dashboard');
+        // Check if user is admin after login and redirect accordingly
+        const isAdmin = canAccessAdminRoutes(auth.user);
+        navigate(isAdmin ? '/admin' : '/dashboard');
       } else {
         toast({
           title: "Login Failed",
