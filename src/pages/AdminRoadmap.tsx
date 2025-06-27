@@ -91,7 +91,7 @@ export default function AdminRoadmap() {
                       <h4 className="font-medium text-sm">{item.title}</h4>
                       <p className="text-xs text-gray-600 line-clamp-2">{item.description}</p>
                       <div className="flex items-center justify-between">
-                        <Badge className={getPriorityColor(item.priority)} size="sm">
+                        <Badge className={getPriorityColor(item.priority)}>
                           {item.priority}
                         </Badge>
                         <span className="text-xs text-gray-500">{item.quarter}</span>
