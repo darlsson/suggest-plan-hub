@@ -7,12 +7,14 @@ import { Users, FileText, Calendar, CheckCircle, Clock, AlertCircle } from 'luci
 import { Button } from '@/components/ui/button';
 import { useState } from 'react';
 import { SuggestionManagementDialog } from '@/components/admin/SuggestionManagementDialog';
-import { Suggestion } from '@/types';
+import { RoadmapItemDialog } from '@/components/admin/RoadmapItemDialog';
+import { Suggestion, RoadmapItem } from '@/types';
 
 export default function AdminDashboard() {
   const { suggestions, roadmapItems, users } = useAppData();
   const { auth } = useAuth();
   const [selectedSuggestion, setSelectedSuggestion] = useState<Suggestion | null>(null);
+  const [selectedRoadmapItem, setSelectedRoadmapItem] = useState<RoadmapItem | null>(null);
 
   const pendingSuggestions = suggestions.filter(s => s.status === 'pending');
   const inProgressItems = roadmapItems.filter(item => item.status === 'in-progress');
@@ -26,6 +28,8 @@ export default function AdminDashboard() {
       description: activeRoadmapItem ? `Due: ${activeRoadmapItem.quarter}` : 'No active roadmap items',
       icon: Calendar,
       color: 'text-purple-600',
+      clickable: true,
+      onClick: () => activeRoadmapItem && setSelectedRoadmapItem(activeRoadmapItem),
     },
     {
       title: 'Pending Suggestions',
@@ -78,7 +82,11 @@ export default function AdminDashboard() {
         {/* Stats Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {stats.map((stat) => (
-            <Card key={stat.title}>
+            <Card 
+              key={stat.title} 
+              className={stat.clickable ? 'cursor-pointer hover:shadow-md transition-shadow' : ''}
+              onClick={stat.onClick}
+            >
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">
                   {stat.title}
@@ -167,11 +175,17 @@ export default function AdminDashboard() {
           </Card>
         </div>
 
-        {/* Suggestion Management Dialog */}
+        {/* Dialogs */}
         <SuggestionManagementDialog
           suggestion={selectedSuggestion}
           open={!!selectedSuggestion}
           onOpenChange={(open) => !open && setSelectedSuggestion(null)}
+        />
+
+        <RoadmapItemDialog
+          roadmapItem={selectedRoadmapItem}
+          open={!!selectedRoadmapItem}
+          onOpenChange={(open) => !open && setSelectedRoadmapItem(null)}
         />
       </div>
     </Layout>
