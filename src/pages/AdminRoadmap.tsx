@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Layout } from '@/components/layout/Layout';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -49,17 +48,11 @@ export default function AdminRoadmap() {
     }
   };
 
-  const handleItemClick = (item: RoadmapItem) => {
+  const handleViewItem = (item: RoadmapItem) => {
     setSelectedItem(item);
   };
 
-  const handleViewItem = (e: React.MouseEvent, item: RoadmapItem) => {
-    e.stopPropagation();
-    setSelectedItem(item);
-  };
-
-  const handleEditItem = (e: React.MouseEvent, item: RoadmapItem) => {
-    e.stopPropagation();
+  const handleEditItem = (item: RoadmapItem) => {
     setEditingItem(item);
   };
 
@@ -87,11 +80,7 @@ export default function AdminRoadmap() {
             </div>
             <div className="space-y-3 min-h-[400px] bg-gray-50 rounded-lg p-4">
               {column.items.map((item) => (
-                <Card 
-                  key={item.id} 
-                  className="cursor-pointer hover:shadow-md transition-shadow"
-                  onClick={() => handleItemClick(item)}
-                >
+                <Card key={item.id} className="hover:shadow-md transition-shadow">
                   <CardContent className="p-4">
                     <div className="space-y-2">
                       <h4 className="font-medium text-sm">{item.title}</h4>
@@ -104,17 +93,15 @@ export default function AdminRoadmap() {
                       </div>
                       <div className="flex items-center justify-end space-x-2 pt-2">
                         <Button
-                          size="sm"
                           variant="outline"
-                          onClick={(e) => handleViewItem(e, item)}
+                          onClick={() => handleViewItem(item)}
                         >
                           <Eye className="h-3 w-3 mr-1" />
                           View
                         </Button>
                         <Button
-                          size="sm"
                           variant="outline"
-                          onClick={(e) => handleEditItem(e, item)}
+                          onClick={() => handleEditItem(item)}
                         >
                           <Edit className="h-3 w-3 mr-1" />
                           Edit
@@ -135,7 +122,7 @@ export default function AdminRoadmap() {
     return (
       <div className="space-y-4">
         {roadmapItems.map((item) => (
-          <Card key={item.id} className="cursor-pointer hover:shadow-md transition-shadow" onClick={() => handleItemClick(item)}>
+          <Card key={item.id} className="hover:shadow-md transition-shadow">
             <CardContent className="p-6">
               <div className="flex items-start justify-between">
                 <div className="flex-1 space-y-2">
@@ -168,17 +155,15 @@ export default function AdminRoadmap() {
                 </div>
                 <div className="flex items-center space-x-2 ml-4">
                   <Button
-                    size="sm"
                     variant="outline"
-                    onClick={(e) => handleViewItem(e, item)}
+                    onClick={() => handleViewItem(item)}
                   >
                     <Eye className="h-4 w-4 mr-1" />
                     View
                   </Button>
                   <Button
-                    size="sm"
                     variant="outline"
-                    onClick={(e) => handleEditItem(e, item)}
+                    onClick={() => handleEditItem(item)}
                   >
                     <Edit className="h-4 w-4 mr-1" />
                     Edit
@@ -205,7 +190,6 @@ export default function AdminRoadmap() {
             <div className="flex items-center bg-gray-100 rounded-lg p-1">
               <Button
                 variant={viewMode === 'kanban' ? 'default' : 'ghost'}
-                size="sm"
                 onClick={() => setViewMode('kanban')}
               >
                 <Kanban className="mr-2 h-4 w-4" />
@@ -213,7 +197,6 @@ export default function AdminRoadmap() {
               </Button>
               <Button
                 variant={viewMode === 'list' ? 'default' : 'ghost'}
-                size="sm"
                 onClick={() => setViewMode('list')}
               >
                 <List className="mr-2 h-4 w-4" />
