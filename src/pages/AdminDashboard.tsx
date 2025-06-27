@@ -6,6 +6,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { Users, FileText, Calendar, CheckCircle, Clock, AlertCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { SuggestionManagementDialog } from '@/components/admin/SuggestionManagementDialog';
 import { RoadmapItemDialog } from '@/components/admin/RoadmapItemDialog';
 import { Suggestion, RoadmapItem } from '@/types';
@@ -13,6 +14,7 @@ import { Suggestion, RoadmapItem } from '@/types';
 export default function AdminDashboard() {
   const { suggestions, roadmapItems, users } = useAppData();
   const { auth } = useAuth();
+  const navigate = useNavigate();
   const [selectedSuggestion, setSelectedSuggestion] = useState<Suggestion | null>(null);
   const [selectedRoadmapItem, setSelectedRoadmapItem] = useState<RoadmapItem | null>(null);
 
@@ -60,6 +62,10 @@ export default function AdminDashboard() {
 
   const handleSuggestionClick = (suggestion: Suggestion) => {
     setSelectedSuggestion(suggestion);
+  };
+
+  const handleReviewSuggestions = () => {
+    navigate('/admin/suggestions?status=pending');
   };
 
   return (
@@ -159,11 +165,13 @@ export default function AdminDashboard() {
                   Manage Users
                 </a>
               </Button>
-              <Button className="w-full justify-start" variant="outline" asChild>
-                <a href="/admin/suggestions">
-                  <FileText className="mr-2 h-4 w-4" />
-                  Review Suggestions ({pendingSuggestions.length} pending)
-                </a>
+              <Button 
+                className="w-full justify-start" 
+                variant="outline" 
+                onClick={handleReviewSuggestions}
+              >
+                <FileText className="mr-2 h-4 w-4" />
+                Review Suggestions ({pendingSuggestions.length} pending)
               </Button>
               <Button className="w-full justify-start" variant="outline" asChild>
                 <a href="/admin/roadmap">

@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { Layout } from '@/components/layout/Layout';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -15,11 +16,20 @@ import { formatDate } from '@/utils/auth';
 
 export default function AdminSuggestions() {
   const { suggestions } = useAppData();
+  const [searchParams] = useSearchParams();
   const [selectedSuggestion, setSelectedSuggestion] = useState<Suggestion | null>(null);
   const [isNewSuggestionOpen, setIsNewSuggestionOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const [typeFilter, setTypeFilter] = useState('all');
+
+  // Set initial filter from URL params
+  useEffect(() => {
+    const statusParam = searchParams.get('status');
+    if (statusParam) {
+      setStatusFilter(statusParam);
+    }
+  }, [searchParams]);
 
   const filteredSuggestions = suggestions.filter((suggestion) => {
     const matchesSearch = suggestion.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
