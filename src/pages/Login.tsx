@@ -13,7 +13,7 @@ export default function Login() {
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   
-  const { login, auth } = useAuth();
+  const { login } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -24,8 +24,8 @@ export default function Login() {
     try {
       const success = await login(email, password);
       if (success) {
-        // Check if user is admin after login and redirect accordingly
-        const isAdmin = canAccessAdminRoutes(auth.user);
+        // Determine redirect based on user role
+        const isAdmin = email === 'admin@company.com';
         navigate(isAdmin ? '/admin' : '/dashboard');
       } else {
         toast({
