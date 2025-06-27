@@ -13,6 +13,7 @@ import Login from "./pages/Login";
 import UserDashboard from "./pages/UserDashboard";
 import AdminDashboard from "./pages/AdminDashboard";
 import AdminSuggestions from "./pages/AdminSuggestions";
+import AdminRoadmap from "./pages/AdminRoadmap";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -49,6 +50,14 @@ const App = () => (
                 element={
                   <ProtectedRoute requireAdmin>
                     <AdminSuggestions />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/admin/roadmap" 
+                element={
+                  <ProtectedRoute requireAdmin>
+                    <AdminRoadmap />
                   </ProtectedRoute>
                 } 
               />
