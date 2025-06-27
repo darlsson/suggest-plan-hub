@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button';
 import { useState } from 'react';
 import { SuggestionManagementDialog } from '@/components/admin/SuggestionManagementDialog';
 import { Suggestion } from '@/types';
+import { mockUsers } from '@/hooks/useAppData.tsx';
 
 export default function AdminDashboard() {
   const { suggestions, roadmapItems, users } = useAppData();
