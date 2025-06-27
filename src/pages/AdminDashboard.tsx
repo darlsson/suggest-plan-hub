@@ -1,14 +1,13 @@
 
 import { Layout } from '@/components/layout/Layout';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { useAppData } from '@/hooks/useAppData';
+import { useAppData, mockUsers } from '@/hooks/useAppData';
 import { useAuth } from '@/hooks/useAuth';
 import { Users, FileText, Calendar, CheckCircle, Clock, AlertCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useState } from 'react';
 import { SuggestionManagementDialog } from '@/components/admin/SuggestionManagementDialog';
 import { Suggestion } from '@/types';
-import { mockUsers } from '@/hooks/useAppData.tsx';
 
 export default function AdminDashboard() {
   const { suggestions, roadmapItems, users } = useAppData();
@@ -67,7 +66,7 @@ export default function AdminDashboard() {
           <div className="flex justify-between items-start">
             <div>
               <h2 className="text-2xl font-bold text-gray-900 mb-2">
-                Hello, {mockUsers.name}!
+                Hello, {user.id}!
               </h2>
               <p className="text-gray-600">
                 Manage users, suggestions, and roadmap items.
