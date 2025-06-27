@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
-import { Filter, Search } from 'lucide-react';
+import { Filter, Search, BarChart3, Plus } from 'lucide-react';
 import { useAppData } from '@/hooks/useAppData';
 import { Suggestion } from '@/types';
 import { SuggestionManagementDialog } from '@/components/admin/SuggestionManagementDialog';
@@ -55,6 +55,16 @@ export default function AdminSuggestions() {
     setTypeFilter('all');
   };
 
+  const handleViewAnalytics = () => {
+    // Mock function for now
+    console.log('View Analytics clicked');
+  };
+
+  const handleNewSuggestion = () => {
+    // Mock function for now
+    console.log('New Suggestion clicked');
+  };
+
   return (
     <Layout title="All Suggestions">
       <div className="space-y-6">
@@ -65,6 +75,23 @@ export default function AdminSuggestions() {
             <p className="text-gray-600">
               {filteredSuggestions.length} of {suggestions.length}
             </p>
+          </div>
+          <div className="flex gap-3">
+            <Button 
+              variant="outline" 
+              onClick={handleViewAnalytics}
+              className="flex items-center gap-2"
+            >
+              <BarChart3 className="h-4 w-4" />
+              View Analytics
+            </Button>
+            <Button 
+              onClick={handleNewSuggestion}
+              className="flex items-center gap-2"
+            >
+              <Plus className="h-4 w-4" />
+              New Suggestion
+            </Button>
           </div>
         </div>
 
