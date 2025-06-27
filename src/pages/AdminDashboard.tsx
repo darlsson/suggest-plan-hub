@@ -66,7 +66,7 @@ export default function AdminDashboard() {
           <div className="flex justify-between items-start">
             <div>
               <h2 className="text-2xl font-bold text-gray-900 mb-2">
-                Admin Dashboard
+                Hello, {Users.name}!
               </h2>
               <p className="text-gray-600">
                 Manage users, suggestions, and roadmap items.
