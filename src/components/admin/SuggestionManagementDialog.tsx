@@ -1,5 +1,5 @@
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   Dialog,
   DialogContent,
@@ -36,7 +36,7 @@ export function SuggestionManagementDialog({
   const [tags, setTags] = useState('');
 
   // Reset form when suggestion changes
-  useState(() => {
+  useEffect(() => {
     if (suggestion) {
       setStatus(suggestion.status);
       setAdminNotes(suggestion.adminNotes || '');
