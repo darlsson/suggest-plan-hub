@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { Layout } from '@/components/layout/Layout';
@@ -78,6 +79,11 @@ export default function AdminSuggestions() {
 
   const handleNewSuggestionSuccess = () => {
     setIsNewSuggestionOpen(false);
+  };
+
+  const truncateDescription = (description: string, maxLength: number = 150) => {
+    if (description.length <= maxLength) return description;
+    return description.substring(0, maxLength).trim() + '...';
   };
 
   return (
@@ -192,7 +198,7 @@ export default function AdminSuggestions() {
                         </div>
                       </div>
                       
-                      <p className="text-gray-600 mb-3">{suggestion.description}</p>
+                      <p className="text-gray-600 mb-3">{truncateDescription(suggestion.description)}</p>
                       
                       <div className="text-sm text-gray-500">
                         Submitted by {suggestion.authorName} on {formatDate(suggestion.createdAt)}
