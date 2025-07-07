@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Layout } from '@/components/layout/Layout';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -18,7 +17,7 @@ export default function Settings() {
   const [fullName, setFullName] = useState(auth.user?.name || '');
   const [email, setEmail] = useState(auth.user?.email || '');
   const [title, setTitle] = useState('');
-  const [memberSince, setMemberSince] = useState(auth.user?.createdAt ? new Date(auth.user.createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) : '');
+  const memberSince = auth.user?.createdAt ? new Date(auth.user.createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) : '';
   
   // Password State
   const [currentPassword, setCurrentPassword] = useState('');
@@ -134,13 +133,11 @@ export default function Settings() {
                     />
                   </div>
                   <div>
-                    <Label htmlFor="memberSince">Member since</Label>
-                    <Input
-                      id="memberSince"
-                      value={memberSince}
-                      onChange={(e) => setMemberSince(e.target.value)}
-                      placeholder="Member since date"
-                    />
+                    <Label>Member since</Label>
+                    <div className="flex items-center space-x-2 mt-1">
+                      <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
+                      <span className="text-sm font-medium">{memberSince}</span>
+                    </div>
                   </div>
                 </div>
                 
