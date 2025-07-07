@@ -1,5 +1,5 @@
-
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Layout } from '@/components/layout/Layout';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -11,7 +11,7 @@ import { useForm } from 'react-hook-form';
 import { useAppData } from '@/hooks/useAppData';
 import { useToast } from '@/hooks/use-toast';
 import { User } from '@/types';
-import { Users, Plus, Edit, Search } from 'lucide-react';
+import { Users, Plus, Edit, Settings, Search } from 'lucide-react';
 import { formatDate } from '@/utils/auth';
 
 interface UserFormData {
@@ -23,11 +23,21 @@ interface UserFormData {
 export default function AdminUsers() {
   const { users, createUser, updateUser } = useAppData();
   const { toast } = useToast();
+  const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState('');
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
   const [editingUser, setEditingUser] = useState<User | null>(null);
+  const [quickEditUser, setQuickEditUser] = useState<User | null>(null);
 
   const form = useForm<UserFormData>({
+    defaultValues: {
+      name: '',
+      email: '',
+      role: 'employee',
+    },
+  });
+
+  const quickEditForm = useForm<UserFormData>({
     defaultValues: {
       name: '',
       email: '',
@@ -70,6 +80,20 @@ export default function AdminUsers() {
     setEditingUser(null);
   };
 
+  const handleQuickEditUser = (data: UserFormData) => {
+    if (!quickEditUser) return;
+    
+    updateUser(quickEditUser.id, data);
+    
+    toast({
+      title: "User updated",
+      description: `${data.name} has been updated successfully.`,
+    });
+    
+    quickEditForm.reset();
+    setQuickEditUser(null);
+  };
+
   const openEditDialog = (user: User) => {
     setEditingUser(user);
     form.reset({
@@ -79,10 +103,28 @@ export default function AdminUsers() {
     });
   };
 
+  const openQuickEdit = (user: User) => {
+    setQuickEditUser(user);
+    quickEditForm.reset({
+      name: user.name,
+      email: user.email,
+      role: user.role,
+    });
+  };
+
+  const openFullEdit = (user: User) => {
+    navigate(`/admin/users/${user.id}/edit`);
+  };
+
   const closeDialog = () => {
     setEditingUser(null);
     setIsCreateDialogOpen(false);
     form.reset();
+  };
+
+  const closeQuickEdit = () => {
+    setQuickEditUser(null);
+    quickEditForm.reset();
   };
 
   return (
@@ -206,7 +248,11 @@ export default function AdminUsers() {
               </TableHeader>
               <TableBody>
                 {filteredUsers.map((user) => (
-                  <TableRow key={user.id}>
+                  <TableRow 
+                    key={user.id} 
+                    className="cursor-pointer hover:bg-muted/50"
+                    onClick={() => openQuickEdit(user)}
+                  >
                     <TableCell className="font-medium">{user.name}</TableCell>
                     <TableCell>{user.email}</TableCell>
                     <TableCell>
@@ -224,9 +270,12 @@ export default function AdminUsers() {
                       <Button
                         variant="outline"
                         size="sm"
-                        onClick={() => openEditDialog(user)}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          openFullEdit(user);
+                        }}
                       >
-                        <Edit className="h-4 w-4" />
+                        <Settings className="h-4 w-4" />
                       </Button>
                     </TableCell>
                   </TableRow>
@@ -241,6 +290,73 @@ export default function AdminUsers() {
             )}
           </CardContent>
         </Card>
+
+        {/* Create User Dialog */}
+        <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Create New User</DialogTitle>
+              <DialogDescription>
+                Add a new user to the system with the specified role and permissions.
+              </DialogDescription>
+            </DialogHeader>
+            <Form {...form}>
+              <form onSubmit={form.handleSubmit(handleCreateUser)} className="space-y-4">
+                <FormField
+                  control={form.control}
+                  name="name"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Full Name</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Enter full name" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                
+                <FormField
+                  control={form.control}
+                  name="email"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Email Address</FormLabel>
+                      <FormControl>
+                        <Input type="email" placeholder="Enter email address" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                
+                <FormField
+                  control={form.control}
+                  name="role"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Role</FormLabel>
+                      <FormControl>
+                        <select {...field} className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">
+                          <option value="employee">Employee</option>
+                          <option value="admin">Admin</option>
+                        </select>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                
+                <div className="flex justify-end space-x-2 pt-4">
+                  <Button type="button" variant="outline" onClick={closeDialog}>
+                    Cancel
+                  </Button>
+                  <Button type="submit">Create User</Button>
+                </div>
+              </form>
+            </Form>
+          </DialogContent>
+        </Dialog>
 
         {/* Edit User Dialog */}
         <Dialog open={!!editingUser} onOpenChange={() => setEditingUser(null)}>
@@ -300,6 +416,73 @@ export default function AdminUsers() {
                 
                 <div className="flex justify-end space-x-2 pt-4">
                   <Button type="button" variant="outline" onClick={closeDialog}>
+                    Cancel
+                  </Button>
+                  <Button type="submit">Update User</Button>
+                </div>
+              </form>
+            </Form>
+          </DialogContent>
+        </Dialog>
+
+        {/* Quick Edit Dialog */}
+        <Dialog open={!!quickEditUser} onOpenChange={closeQuickEdit}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Quick Edit User</DialogTitle>
+              <DialogDescription>
+                Make quick changes to user information.
+              </DialogDescription>
+            </DialogHeader>
+            <Form {...quickEditForm}>
+              <form onSubmit={quickEditForm.handleSubmit(handleQuickEditUser)} className="space-y-4">
+                <FormField
+                  control={quickEditForm.control}
+                  name="name"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Full Name</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Enter full name" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                
+                <FormField
+                  control={quickEditForm.control}
+                  name="email"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Email Address</FormLabel>
+                      <FormControl>
+                        <Input type="email" placeholder="Enter email address" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                
+                <FormField
+                  control={quickEditForm.control}
+                  name="role"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Role</FormLabel>
+                      <FormControl>
+                        <select {...field} className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">
+                          <option value="employee">Employee</option>
+                          <option value="admin">Admin</option>
+                        </select>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                
+                <div className="flex justify-end space-x-2 pt-4">
+                  <Button type="button" variant="outline" onClick={closeQuickEdit}>
                     Cancel
                   </Button>
                   <Button type="submit">Update User</Button>

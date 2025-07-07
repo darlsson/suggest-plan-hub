@@ -1,91 +1,88 @@
 
-import { Toaster } from "@/components/ui/toaster";
-import { Toaster as Sonner } from "@/components/ui/sonner";
-import { TooltipProvider } from "@/components/ui/tooltip";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import { AuthProvider } from "@/hooks/useAuth";
-import { AppDataProvider } from "@/hooks/useAppData";
-import { ProtectedRoute } from "@/components/ProtectedRoute";
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { AuthProvider } from './hooks/useAuth';
+import { AppDataProvider } from './hooks/useAppData';
+import { Toaster } from './components/ui/toaster';
+import ProtectedRoute from './components/ProtectedRoute';
 
 // Pages
-import Login from "./pages/Login";
-import UserDashboard from "./pages/UserDashboard";
-import AdminDashboard from "./pages/AdminDashboard";
-import AdminSuggestions from "./pages/AdminSuggestions";
-import AdminRoadmap from "./pages/AdminRoadmap";
-import AdminUsers from "./pages/AdminUsers";
-import Settings from "./pages/Settings";
-import NotFound from "./pages/NotFound";
+import Index from './pages/Index';
+import Login from './pages/Login';
+import UserDashboard from './pages/UserDashboard';
+import AdminDashboard from './pages/AdminDashboard';
+import AdminSuggestions from './pages/AdminSuggestions';
+import AdminRoadmap from './pages/AdminRoadmap';
+import AdminUsers from './pages/AdminUsers';
+import AdminUserEdit from './pages/AdminUserEdit';
+import Settings from './pages/Settings';
+import NotFound from './pages/NotFound';
+
+import './App.css';
 
 const queryClient = new QueryClient();
 
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
+function App() {
+  return (
+    <QueryClientProvider client={queryClient}>
       <AuthProvider>
         <AppDataProvider>
-          <BrowserRouter>
-            <Routes>
-              <Route path="/login" element={<Login />} />
-              <Route path="/" element={<Navigate to="/dashboard" replace />} />
-              <Route 
-                path="/dashboard" 
-                element={
+          <Router>
+            <div className="min-h-screen bg-gray-50">
+              <Routes>
+                <Route path="/" element={<Index />} />
+                <Route path="/login" element={<Login />} />
+                
+                {/* Protected User Routes */}
+                <Route path="/dashboard" element={
                   <ProtectedRoute>
                     <UserDashboard />
                   </ProtectedRoute>
-                } 
-              />
-              <Route 
-                path="/settings" 
-                element={
+                } />
+                <Route path="/settings" element={
                   <ProtectedRoute>
                     <Settings />
                   </ProtectedRoute>
-                } 
-              />
-              <Route 
-                path="/admin" 
-                element={
-                  <ProtectedRoute requireAdmin>
+                } />
+                
+                {/* Protected Admin Routes */}
+                <Route path="/admin" element={
+                  <ProtectedRoute adminOnly>
                     <AdminDashboard />
                   </ProtectedRoute>
-                } 
-              />
-              <Route 
-                path="/admin/suggestions" 
-                element={
-                  <ProtectedRoute requireAdmin>
+                } />
+                <Route path="/admin/suggestions" element={
+                  <ProtectedRoute adminOnly>
                     <AdminSuggestions />
                   </ProtectedRoute>
-                } 
-              />
-              <Route 
-                path="/admin/roadmap" 
-                element={
-                  <ProtectedRoute requireAdmin>
+                } />
+                <Route path="/admin/roadmap" element={
+                  <ProtectedRoute adminOnly>
                     <AdminRoadmap />
                   </ProtectedRoute>
-                } 
-              />
-              <Route 
-                path="/admin/users" 
-                element={
-                  <ProtectedRoute requireAdmin>
+                } />
+                <Route path="/admin/users" element={
+                  <ProtectedRoute adminOnly>
                     <AdminUsers />
                   </ProtectedRoute>
-                } 
-              />
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </BrowserRouter>
+                } />
+                <Route path="/admin/users/:id/edit" element={
+                  <ProtectedRoute adminOnly>
+                    <AdminUserEdit />
+                  </ProtectedRoute>
+                } />
+                
+                {/* Fallback Routes */}
+                <Route path="/404" element={<NotFound />} />
+                <Route path="*" element={<Navigate to="/404" replace />} />
+              </Routes>
+            </div>
+            <Toaster />
+          </Router>
         </AppDataProvider>
       </AuthProvider>
-    </TooltipProvider>
-  </QueryClientProvider>
-);
+    </QueryClientProvider>
+  );
+}
 
 export default App;
