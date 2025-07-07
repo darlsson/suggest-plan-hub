@@ -13,17 +13,17 @@ export function AdminNavbar() {
       icon: LayoutDashboard,
       isActive: location.pathname === '/admin'
     },
+  { 
+      name: 'Roadmap Panel', 
+      href: '/admin/roadmap', 
+      icon: MapPin,
+      isActive: location.pathname === '/admin/roadmap'
+    },
     { 
       name: 'Suggestion Panel', 
       href: '/admin/suggestions', 
       icon: Lightbulb,
       isActive: location.pathname === '/admin/suggestions'
-    },
-    { 
-      name: 'Roadmap Panel', 
-      href: '/admin/roadmap', 
-      icon: MapPin,
-      isActive: location.pathname === '/admin/roadmap'
     },
     { 
       name: 'User Management', 
