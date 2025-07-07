@@ -14,6 +14,7 @@ import UserDashboard from "./pages/UserDashboard";
 import AdminDashboard from "./pages/AdminDashboard";
 import AdminSuggestions from "./pages/AdminSuggestions";
 import AdminRoadmap from "./pages/AdminRoadmap";
+import AdminUsers from "./pages/AdminUsers";
 import Settings from "./pages/Settings";
 import NotFound from "./pages/NotFound";
 
@@ -67,6 +68,14 @@ const App = () => (
                 element={
                   <ProtectedRoute requireAdmin>
                     <AdminRoadmap />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/admin/users" 
+                element={
+                  <ProtectedRoute requireAdmin>
+                    <AdminUsers />
                   </ProtectedRoute>
                 } 
               />
