@@ -11,7 +11,7 @@ import { useForm } from 'react-hook-form';
 import { useAppData } from '@/hooks/useAppData';
 import { useToast } from '@/hooks/use-toast';
 import { User } from '@/types';
-import { Users, Plus, Edit, Trash2, Search } from 'lucide-react';
+import { Users, Plus, Edit, Search } from 'lucide-react';
 import { formatDate } from '@/utils/auth';
 
 interface UserFormData {
@@ -21,7 +21,7 @@ interface UserFormData {
 }
 
 export default function AdminUsers() {
-  const { users, createUser, updateUser, deleteUser } = useAppData();
+  const { users, createUser, updateUser } = useAppData();
   const { toast } = useToast();
   const [searchTerm, setSearchTerm] = useState('');
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
@@ -68,16 +68,6 @@ export default function AdminUsers() {
     
     form.reset();
     setEditingUser(null);
-  };
-
-  const handleDeleteUser = (user: User) => {
-    if (window.confirm(`Are you sure you want to delete ${user.name}?`)) {
-      deleteUser(user.id);
-      toast({
-        title: "User deleted",
-        description: `${user.name} has been removed successfully.`,
-      });
-    }
   };
 
   const openEditDialog = (user: User) => {
@@ -231,22 +221,13 @@ export default function AdminUsers() {
                     <TableCell>{formatDate(user.createdAt)}</TableCell>
                     <TableCell>{user.lastLogin ? formatDate(user.lastLogin) : 'Never'}</TableCell>
                     <TableCell className="text-right">
-                      <div className="flex justify-end space-x-2">
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => openEditDialog(user)}
-                        >
-                          <Edit className="h-4 w-4" />
-                        </Button>
-                        <Button
-                          variant="destructive"
-                          size="sm"
-                          onClick={() => handleDeleteUser(user)}
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
-                      </div>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => openEditDialog(user)}
+                      >
+                        <Edit className="h-4 w-4" />
+                      </Button>
                     </TableCell>
                   </TableRow>
                 ))}
