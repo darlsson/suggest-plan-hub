@@ -8,7 +8,7 @@ import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { useAuth } from '@/hooks/useAuth';
 import { useToast } from '@/hooks/use-toast';
-import { User, Bell, Lock, Settings as SettingsIcon } from 'lucide-react';
+import { User, Bell, Lock, Settings as SettingsIcon, RotateCcw } from 'lucide-react';
 
 export default function Settings() {
   const { auth } = useAuth();
@@ -17,6 +17,8 @@ export default function Settings() {
   // Profile Information State
   const [fullName, setFullName] = useState(auth.user?.name || '');
   const [email, setEmail] = useState(auth.user?.email || '');
+  const [title, setTitle] = useState('');
+  const [memberSince, setMemberSince] = useState(auth.user?.createdAt ? new Date(auth.user.createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) : '');
   
   // Password State
   const [currentPassword, setCurrentPassword] = useState('');
@@ -26,7 +28,6 @@ export default function Settings() {
   // Notification Settings State
   const [emailNotifications, setEmailNotifications] = useState(true);
   const [systemAlerts, setSystemAlerts] = useState(true);
-  const [marketingEmails, setMarketingEmails] = useState(false);
 
   const handleSaveProfile = () => {
     // In a real app, this would update the user profile
@@ -67,11 +68,11 @@ export default function Settings() {
     setConfirmPassword('');
   };
 
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
+  const handleResetPassword = () => {
+    // In a real app, this would send a password reset email
+    toast({
+      title: "Password reset sent",
+      description: "A password reset link has been sent to your email.",
     });
   };
 
@@ -118,6 +119,27 @@ export default function Settings() {
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       placeholder="Enter your email"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <Label htmlFor="title">Title</Label>
+                    <Input
+                      id="title"
+                      value={title}
+                      onChange={(e) => setTitle(e.target.value)}
+                      placeholder="Enter your job title"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="memberSince">Member since</Label>
+                    <Input
+                      id="memberSince"
+                      value={memberSince}
+                      onChange={(e) => setMemberSince(e.target.value)}
+                      placeholder="Member since date"
                     />
                   </div>
                 </div>
@@ -186,15 +208,21 @@ export default function Settings() {
                   </div>
                 </div>
 
-                <Button onClick={handleChangePassword} className="w-full md:w-auto">
-                  <Lock className="mr-2 h-4 w-4" />
-                  Change Password
-                </Button>
+                <div className="flex gap-4">
+                  <Button onClick={handleChangePassword} className="w-full md:w-auto">
+                    <Lock className="mr-2 h-4 w-4" />
+                    Change Password
+                  </Button>
+                  <Button onClick={handleResetPassword} variant="outline" className="w-full md:w-auto">
+                    <RotateCcw className="mr-2 h-4 w-4" />
+                    Reset Password
+                  </Button>
+                </div>
               </CardContent>
             </Card>
           </div>
 
-          {/* Right Column - Notifications and Account Summary */}
+          {/* Right Column - Notifications */}
           <div className="space-y-6">
             {/* Notifications */}
             <Card>
@@ -244,56 +272,6 @@ export default function Settings() {
                       {systemAlerts ? 'Enabled' : 'Disabled'}
                     </span>
                   </div>
-                </div>
-
-                <div className="flex items-center justify-between">
-                  <div>
-                    <Label htmlFor="marketingEmails" className="text-sm font-medium">
-                      Marketing emails
-                    </Label>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <Switch
-                      id="marketingEmails"
-                      checked={marketingEmails}
-                      onCheckedChange={setMarketingEmails}
-                    />
-                    <span className="text-xs text-gray-500 font-medium">
-                      {marketingEmails ? 'Enabled' : 'Disabled'}
-                    </span>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Account Summary */}
-            <Card>
-              <CardHeader>
-                <div className="flex items-center space-x-2">
-                  <div className="p-2 bg-orange-100 rounded-full">
-                    <SettingsIcon className="h-5 w-5 text-orange-600" />
-                  </div>
-                  <div>
-                    <CardTitle>Account Summary</CardTitle>
-                  </div>
-                </div>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <span className="text-sm font-medium">Account status</span>
-                  <span className="text-xs text-green-600 font-medium">Active</span>
-                </div>
-
-                <div className="flex items-center justify-between">
-                  <span className="text-sm font-medium">Last login</span>
-                  <span className="text-xs text-gray-500">Just now</span>
-                </div>
-
-                <div className="flex items-center justify-between">
-                  <span className="text-sm font-medium">Member since</span>
-                  <span className="text-xs text-gray-500">
-                    {auth.user?.createdAt ? formatDate(auth.user.createdAt) : 'Demo account'}
-                  </span>
                 </div>
               </CardContent>
             </Card>
