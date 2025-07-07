@@ -4,7 +4,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { AuthProvider } from './hooks/useAuth';
 import { AppDataProvider } from './hooks/useAppData';
 import { Toaster } from './components/ui/toaster';
-import ProtectedRoute from './components/ProtectedRoute';
+import { ProtectedRoute } from './components/ProtectedRoute';
 
 // Pages
 import Index from './pages/Index';
@@ -47,27 +47,27 @@ function App() {
                 
                 {/* Protected Admin Routes */}
                 <Route path="/admin" element={
-                  <ProtectedRoute adminOnly>
+                  <ProtectedRoute requireAdmin>
                     <AdminDashboard />
                   </ProtectedRoute>
                 } />
                 <Route path="/admin/suggestions" element={
-                  <ProtectedRoute adminOnly>
+                  <ProtectedRoute requireAdmin>
                     <AdminSuggestions />
                   </ProtectedRoute>
                 } />
                 <Route path="/admin/roadmap" element={
-                  <ProtectedRoute adminOnly>
+                  <ProtectedRoute requireAdmin>
                     <AdminRoadmap />
                   </ProtectedRoute>
                 } />
                 <Route path="/admin/users" element={
-                  <ProtectedRoute adminOnly>
+                  <ProtectedRoute requireAdmin>
                     <AdminUsers />
                   </ProtectedRoute>
                 } />
                 <Route path="/admin/users/:id/edit" element={
-                  <ProtectedRoute adminOnly>
+                  <ProtectedRoute requireAdmin>
                     <AdminUserEdit />
                   </ProtectedRoute>
                 } />
