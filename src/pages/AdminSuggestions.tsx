@@ -1,6 +1,6 @@
 
 import { useState, useEffect } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams, useNavigate } from 'react-router-dom';
 import { Layout } from '@/components/layout/Layout';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -18,6 +18,7 @@ import { formatDate } from '@/utils/auth';
 export default function AdminSuggestions() {
   const { suggestions } = useAppData();
   const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
   const [selectedSuggestion, setSelectedSuggestion] = useState<Suggestion | null>(null);
   const [isNewSuggestionOpen, setIsNewSuggestionOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
@@ -69,8 +70,7 @@ export default function AdminSuggestions() {
   };
 
   const handleViewAnalytics = () => {
-    // Mock function for now
-    console.log('View Analytics clicked');
+    navigate('/admin/analytics');
   };
 
   const handleNewSuggestion = () => {

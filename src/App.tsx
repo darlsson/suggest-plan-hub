@@ -12,6 +12,7 @@ import Login from './pages/Login';
 import UserDashboard from './pages/UserDashboard';
 import AdminDashboard from './pages/AdminDashboard';
 import AdminSuggestions from './pages/AdminSuggestions';
+import AdminAnalytics from './pages/AdminAnalytics';
 import AdminRoadmap from './pages/AdminRoadmap';
 import AdminUsers from './pages/AdminUsers';
 import AdminUserEdit from './pages/AdminUserEdit';
@@ -54,6 +55,11 @@ function App() {
                 <Route path="/admin/suggestions" element={
                   <ProtectedRoute requireAdmin>
                     <AdminSuggestions />
+                  </ProtectedRoute>
+                } />
+                <Route path="/admin/analytics" element={
+                  <ProtectedRoute requireAdmin>
+                    <AdminAnalytics />
                   </ProtectedRoute>
                 } />
                 <Route path="/admin/roadmap" element={
