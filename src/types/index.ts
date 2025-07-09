@@ -22,6 +22,7 @@ export interface Suggestion {
   updatedAt: string;
   votes: number;
   adminNotes?: string;
+  tags?: string[];
 }
 
 export interface RoadmapItem {

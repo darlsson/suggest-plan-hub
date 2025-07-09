@@ -17,6 +17,7 @@ import { Suggestion } from '@/types';
 import { useAppData } from '@/hooks/useAppData';
 import { useToast } from '@/hooks/use-toast';
 import { formatDate } from '@/utils/auth';
+import { TagManager } from './TagManager';
 
 interface SuggestionManagementDialogProps {
   suggestion: Suggestion | null;
@@ -34,7 +35,7 @@ export function SuggestionManagementDialog({
   const [status, setStatus] = useState<string>('');
   const [priority, setPriority] = useState<string>('');
   const [adminNotes, setAdminNotes] = useState('');
-  const [tags, setTags] = useState('');
+  const [tags, setTags] = useState<string[]>([]);
 
   // Reset form when suggestion changes
   useEffect(() => {
@@ -42,7 +43,7 @@ export function SuggestionManagementDialog({
       setStatus(suggestion.status);
       setPriority(suggestion.priority);
       setAdminNotes(suggestion.adminNotes || '');
-      setTags(''); // Add tags field to Suggestion type if needed
+      setTags(suggestion.tags || []);
     }
   }, [suggestion]);
 
@@ -53,6 +54,7 @@ export function SuggestionManagementDialog({
       status: status as any,
       priority: priority as any,
       adminNotes: adminNotes.trim() || undefined,
+      tags: tags.length > 0 ? tags : undefined,
     });
 
     toast({
@@ -103,7 +105,7 @@ export function SuggestionManagementDialog({
               <span>Votes: {suggestion.votes}</span>
             </div>
 
-            <div className="flex gap-2">
+            <div className="flex flex-wrap gap-2">
               <Badge className={statusColors[suggestion.status]}>
                 {suggestion.status.replace('-', ' ')}
               </Badge>
@@ -114,6 +116,20 @@ export function SuggestionManagementDialog({
                 {suggestion.category}
               </Badge>
             </div>
+
+            {/* Display existing tags */}
+            {suggestion.tags && suggestion.tags.length > 0 && (
+              <div>
+                <h4 className="font-semibold mb-2">Current Tags</h4>
+                <div className="flex flex-wrap gap-2">
+                  {suggestion.tags.map(tag => (
+                    <Badge key={tag} variant="secondary">
+                      {tag}
+                    </Badge>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Management Form */}
@@ -162,13 +178,11 @@ export function SuggestionManagementDialog({
             </div>
 
             <div>
-              <Label htmlFor="tags">Tags (comma-separated)</Label>
-              <Textarea
-                id="tags"
-                value={tags}
-                onChange={(e) => setTags(e.target.value)}
-                placeholder="ui, backend, mobile, etc."
-                rows={2}
+              <Label htmlFor="tags">Tags</Label>
+              <TagManager
+                selectedTags={tags}
+                onTagsChange={setTags}
+                placeholder="Add tags for analytics..."
               />
             </div>
           </div>

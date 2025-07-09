@@ -16,6 +16,7 @@ interface AppDataContextType {
   createUser: (user: Omit<User, 'id' | 'createdAt'>) => void;
   updateUser: (id: string, updates: Partial<User>) => void;
   deleteUser: (id: string) => void;
+  getAvailableTags: () => string[];
 }
 
 const AppDataContext = createContext<AppDataContextType | undefined>(undefined);
@@ -34,7 +35,8 @@ const mockSuggestions: Suggestion[] = [
     createdAt: '2024-01-15T10:30:00Z',
     updatedAt: '2024-01-16T14:20:00Z',
     votes: 12,
-    adminNotes: 'Great idea, will implement in Q2'
+    adminNotes: 'Great idea, will implement in Q2',
+    tags: ['ui', 'accessibility', 'user-experience']
   },
   {
     id: '2',
@@ -47,8 +49,17 @@ const mockSuggestions: Suggestion[] = [
     authorName: 'Jane Smith',
     createdAt: '2024-01-20T09:15:00Z',
     updatedAt: '2024-01-20T09:15:00Z',
-    votes: 25
+    votes: 25,
+    tags: ['mobile', 'accessibility', 'cross-platform']
   }
+];
+
+// Common tags for suggestions
+const commonTags = [
+  'ui', 'ux', 'backend', 'frontend', 'mobile', 'desktop', 'accessibility', 
+  'performance', 'security', 'user-experience', 'cross-platform', 'api', 
+  'database', 'analytics', 'reporting', 'notifications', 'integration',
+  'automation', 'testing', 'documentation'
 ];
 
 const mockRoadmapItems: RoadmapItem[] = [
@@ -175,6 +186,18 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
     setUsers(prev => prev.filter(user => user.id !== id));
   };
 
+  const getAvailableTags = () => {
+    // Get all tags from existing suggestions
+    const existingTags = new Set<string>();
+    suggestions.forEach(suggestion => {
+      suggestion.tags?.forEach(tag => existingTags.add(tag));
+    });
+    
+    // Combine with common tags and remove duplicates
+    const allTags = Array.from(new Set([...commonTags, ...existingTags]));
+    return allTags.sort();
+  };
+
   return (
     <AppDataContext.Provider value={{
       suggestions,
@@ -189,6 +212,7 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
       createUser,
       updateUser,
       deleteUser,
+      getAvailableTags,
     }}>
       {children}
     </AppDataContext.Provider>
