@@ -72,13 +72,13 @@ export default function AdminDashboard() {
     <Layout title="Admin Dashboard">
       <div className="space-y-6">
         {/* Welcome Section */}
-        <div className="bg-white rounded-lg shadow p-6">
-          <div className="flex justify-between items-start">
-            <div>
-              <h2 className="text-2xl font-bold text-gray-900 mb-2">
+        <div className="bg-white rounded-lg shadow p-4 md:p-6">
+          <div className="flex flex-col md:flex-row md:justify-between md:items-start">
+            <div className="text-center md:text-left">
+              <h2 className="text-xl md:text-2xl font-bold text-gray-900 mb-2">
                 Hello, Motherfucker!
               </h2>
-              <p className="text-gray-600">
+              <p className="text-sm md:text-base text-gray-600">
                 Manage users, suggestions, and roadmap items.
               </p>
             </div>
@@ -110,7 +110,7 @@ export default function AdminDashboard() {
         </div>
 
         {/* Recent Activity */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6">
           <Card>
             <CardHeader>
               <CardTitle>Recent Suggestions</CardTitle>
@@ -122,25 +122,27 @@ export default function AdminDashboard() {
               {recentSuggestions.length > 0 ? (
                 <div className="space-y-4">
                   {recentSuggestions.map((suggestion) => (
-                    <div 
+                     <div 
                       key={suggestion.id} 
-                      className="flex items-start space-x-3 p-3 bg-gray-50 rounded-lg cursor-pointer hover:bg-gray-100 transition-colors"
+                      className="flex flex-col sm:flex-row sm:items-start space-y-2 sm:space-y-0 sm:space-x-3 p-3 bg-gray-50 rounded-lg cursor-pointer hover:bg-gray-100 transition-colors"
                       onClick={() => handleSuggestionClick(suggestion)}
                     >
-                      <div className="flex-1 min-w-0">
-                        <p className="font-medium text-gray-900 truncate">
-                          {suggestion.title}
-                        </p>
-                        <p className="text-sm text-gray-500">
+                       <div className="flex-1 min-w-0">
+                        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
+                          <p className="font-medium text-gray-900 text-sm sm:text-base truncate">
+                            {suggestion.title}
+                          </p>
+                          <div className={`self-start sm:self-auto mt-1 sm:mt-0 px-2 py-1 text-xs rounded-full ${
+                            suggestion.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
+                            suggestion.status === 'approved' ? 'bg-green-100 text-green-800' :
+                            'bg-gray-100 text-gray-800'
+                          }`}>
+                            {suggestion.status}
+                          </div>
+                        </div>
+                        <p className="text-xs sm:text-sm text-gray-500 mt-1">
                           by {suggestion.authorName} • {suggestion.status}
                         </p>
-                      </div>
-                      <div className={`px-2 py-1 text-xs rounded-full ${
-                        suggestion.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
-                        suggestion.status === 'approved' ? 'bg-green-100 text-green-800' :
-                        'bg-gray-100 text-gray-800'
-                      }`}>
-                        {suggestion.status}
                       </div>
                     </div>
                   ))}
@@ -159,21 +161,21 @@ export default function AdminDashboard() {
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-3">
-              <Button className="w-full justify-start" variant="outline" asChild>
+              <Button className="w-full justify-start text-sm sm:text-base min-h-[44px]" variant="outline" asChild>
                 <a href="/admin/users">
                   <Users className="mr-2 h-4 w-4" />
                   Manage Users
                 </a>
               </Button>
               <Button 
-                className="w-full justify-start" 
+                className="w-full justify-start text-sm sm:text-base min-h-[44px]" 
                 variant="outline" 
                 onClick={handleReviewSuggestions}
               >
                 <FileText className="mr-2 h-4 w-4" />
-                Review Suggestions ({pendingSuggestions.length} pending)
+                <span className="truncate">Review Suggestions ({pendingSuggestions.length} pending)</span>
               </Button>
-              <Button className="w-full justify-start" variant="outline" asChild>
+              <Button className="w-full justify-start text-sm sm:text-base min-h-[44px]" variant="outline" asChild>
                 <a href="/admin/roadmap">
                   <Calendar className="mr-2 h-4 w-4" />
                   Manage Roadmap

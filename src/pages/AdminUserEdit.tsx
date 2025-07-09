@@ -77,17 +77,18 @@ export default function AdminUserEdit() {
   return (
     <Layout title={`Edit User: ${user.name}`}>
       <div className="space-y-6">
-        <div className="flex items-center space-x-4">
+        <div className="flex flex-col space-y-4 md:flex-row md:items-center md:space-x-4 md:space-y-0">
           <Button 
             variant="outline" 
             onClick={() => navigate('/admin/users')}
+            className="self-start min-h-[44px]"
           >
             <ArrowLeft className="mr-2 h-4 w-4" />
             Back to Users
           </Button>
-          <div>
-            <h1 className="text-3xl font-bold text-gray-900">Edit User: {user.name}</h1>
-            <p className="text-gray-600 mt-2">Manage user account settings and permissions</p>
+          <div className="text-center md:text-left">
+            <h1 className="text-xl md:text-3xl font-bold text-gray-900">Edit User: {user.name}</h1>
+            <p className="text-sm md:text-base text-gray-600 mt-2">Manage user account settings and permissions</p>
           </div>
         </div>
 
@@ -114,6 +115,7 @@ export default function AdminUserEdit() {
                     value={fullName}
                     onChange={(e) => setFullName(e.target.value)}
                     placeholder="Enter full name"
+                    className="min-h-[44px]"
                   />
                 </div>
                 <div>
@@ -124,6 +126,7 @@ export default function AdminUserEdit() {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="Enter email address"
+                    className="min-h-[44px]"
                   />
                 </div>
               </div>
@@ -135,7 +138,7 @@ export default function AdminUserEdit() {
                     id="role"
                     value={role}
                     onChange={(e) => setRole(e.target.value as 'admin' | 'employee')}
-                    className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                    className="flex h-11 md:h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                   >
                     <option value="employee">Employee</option>
                     <option value="admin">Admin</option>
@@ -148,6 +151,7 @@ export default function AdminUserEdit() {
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
                     placeholder="Enter job title"
+                    className="min-h-[44px]"
                   />
                 </div>
               </div>
@@ -171,7 +175,7 @@ export default function AdminUserEdit() {
                 </div>
               </div>
 
-              <Button onClick={handleSaveProfile} className="w-full md:w-auto">
+              <Button onClick={handleSaveProfile} className="w-full md:w-auto min-h-[44px]">
                 <Save className="mr-2 h-4 w-4" />
                 Save Profile
               </Button>
@@ -196,9 +200,10 @@ export default function AdminUserEdit() {
                 <p className="text-sm text-gray-600 mb-4">
                   Send a password reset link to {email}. The user will receive an email with instructions to create a new password.
                 </p>
-                <Button onClick={handleResetPassword} className="w-full md:w-auto">
+                <Button onClick={handleResetPassword} className="w-full md:w-auto min-h-[44px]">
                   <Mail className="mr-2 h-4 w-4" />
-                  Send Password Reset Email
+                  <span className="hidden sm:inline">Send Password Reset Email</span>
+                  <span className="sm:hidden">Reset Password</span>
                 </Button>
               </div>
             </CardContent>

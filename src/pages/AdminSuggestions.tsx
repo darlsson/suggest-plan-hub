@@ -90,25 +90,25 @@ export default function AdminSuggestions() {
     <Layout title="All Suggestions">
       <div className="space-y-6">
         {/* Header */}
-        <div className="flex justify-between items-center">
-          <div>
-            <h2 className="text-2xl font-bold text-gray-900">All Suggestions</h2>
-            <p className="text-gray-600">
+        <div className="flex flex-col space-y-4 md:flex-row md:justify-between md:items-center md:space-y-0">
+          <div className="text-center md:text-left">
+            <h2 className="text-xl md:text-2xl font-bold text-gray-900">All Suggestions</h2>
+            <p className="text-sm md:text-base text-gray-600">
               {filteredSuggestions.length} of {suggestions.length}
             </p>
           </div>
-          <div className="flex gap-3">
+          <div className="flex flex-col space-y-2 md:flex-row md:gap-3 md:space-y-0">
             <Button 
               variant="outline" 
               onClick={handleViewAnalytics}
-              className="flex items-center gap-2"
+              className="flex items-center justify-center gap-2 min-h-[44px]"
             >
               <BarChart3 className="h-4 w-4" />
               View Analytics
             </Button>
             <Button 
               onClick={handleNewSuggestion}
-              className="flex items-center gap-2"
+              className="flex items-center justify-center gap-2 min-h-[44px]"
             >
               <Plus className="h-4 w-4" />
               New Suggestion
@@ -119,7 +119,7 @@ export default function AdminSuggestions() {
         {/* Filters */}
         <Card>
           <CardContent className="pt-6">
-            <div className="flex flex-col md:flex-row gap-4 items-end">
+            <div className="flex flex-col space-y-4 md:flex-row md:gap-4 md:items-end md:space-y-0">
               <div className="flex-1">
                 <div className="relative">
                   <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
@@ -127,14 +127,14 @@ export default function AdminSuggestions() {
                     placeholder="Search suggestions..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    className="pl-10"
+                    className="pl-10 min-h-[44px]"
                   />
                 </div>
               </div>
               
-              <div className="flex gap-2">
+              <div className="flex flex-col space-y-2 md:flex-row md:gap-2 md:space-y-0">
                 <Select value={statusFilter} onValueChange={setStatusFilter}>
-                  <SelectTrigger className="w-[150px]">
+                  <SelectTrigger className="w-full md:w-[150px] min-h-[44px]">
                     <SelectValue placeholder="All Statuses" />
                   </SelectTrigger>
                   <SelectContent className="bg-white">
@@ -148,7 +148,7 @@ export default function AdminSuggestions() {
                 </Select>
 
                 <Select value={typeFilter} onValueChange={setTypeFilter}>
-                  <SelectTrigger className="w-[150px]">
+                  <SelectTrigger className="w-full md:w-[150px] min-h-[44px]">
                     <SelectValue placeholder="All Types" />
                   </SelectTrigger>
                   <SelectContent className="bg-white">
@@ -163,7 +163,7 @@ export default function AdminSuggestions() {
                 <Button 
                   variant="outline" 
                   onClick={clearFilters}
-                  className="flex items-center gap-2"
+                  className="flex items-center justify-center gap-2 min-h-[44px]"
                 >
                   <Filter className="h-4 w-4" />
                   Clear Filters
@@ -179,16 +179,18 @@ export default function AdminSuggestions() {
             filteredSuggestions.map((suggestion) => (
               <Card key={suggestion.id}>
                 <CardContent className="pt-6">
-                  <div className="flex justify-between items-start">
+                  <div className="flex flex-col md:flex-row md:justify-between md:items-start">
                     <div className="flex-1">
-                      <div className="flex items-start justify-between mb-3">
-                        <h3 className="text-lg font-semibold text-gray-900">
-                          {suggestion.title}
-                          <Badge className={`ml-2 ${categoryColors[suggestion.category]}`}>
+                      <div className="flex flex-col space-y-3 md:flex-row md:items-start md:justify-between md:space-y-0 mb-3">
+                        <div className="flex flex-col space-y-2">
+                          <h3 className="text-base md:text-lg font-semibold text-gray-900">
+                            {suggestion.title}
+                          </h3>
+                          <Badge className={`self-start ${categoryColors[suggestion.category]}`}>
                             {suggestion.category}
                           </Badge>
-                        </h3>
-                        <div className="flex gap-2">
+                        </div>
+                        <div className="flex gap-2 flex-wrap">
                           <Badge className={statusColors[suggestion.status]}>
                             {suggestion.status.replace('-', ' ')}
                           </Badge>
@@ -212,11 +214,12 @@ export default function AdminSuggestions() {
                       )}
                     </div>
                     
-                    <div className="ml-4">
+                    <div className="ml-0 md:ml-4 mt-4 md:mt-0 self-start md:self-auto">
                       <Button 
                         variant="outline" 
                         size="sm"
                         onClick={() => setSelectedSuggestion(suggestion)}
+                        className="min-h-[40px] w-full md:w-auto"
                       >
                         Manage
                       </Button>

@@ -71,14 +71,14 @@ export default function AdminRoadmap() {
     ];
 
     return (
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
         {columns.map((column) => (
           <div key={column.status} className="space-y-4">
             <div className="flex items-center justify-between">
-              <h3 className="font-semibold text-lg">{column.title}</h3>
+              <h3 className="font-semibold text-base md:text-lg">{column.title}</h3>
               <Badge variant="outline">{column.items.length}</Badge>
             </div>
-            <div className="space-y-3 min-h-[400px] bg-gray-50 rounded-lg p-4">
+            <div className="space-y-3 min-h-[300px] md:min-h-[400px] bg-gray-50 rounded-lg p-3 md:p-4">
               {column.items.map((item) => (
                 <Card key={item.id} className="hover:shadow-md transition-shadow">
                   <CardContent className="p-4">
@@ -91,20 +91,24 @@ export default function AdminRoadmap() {
                         </Badge>
                         <span className="text-xs text-gray-500">{item.quarter}</span>
                       </div>
-                      <div className="flex items-center justify-end space-x-2 pt-2">
+                      <div className="flex items-center justify-end space-x-1 md:space-x-2 pt-2">
                         <Button
                           variant="outline"
+                          size="sm"
                           onClick={() => handleViewItem(item)}
+                          className="min-h-[36px] text-xs"
                         >
-                          <Eye className="h-3 w-3 mr-1" />
-                          View
+                          <Eye className="h-3 w-3 md:mr-1" />
+                          <span className="hidden md:inline">View</span>
                         </Button>
                         <Button
                           variant="outline"
+                          size="sm"
                           onClick={() => handleEditItem(item)}
+                          className="min-h-[36px] text-xs"
                         >
-                          <Edit className="h-3 w-3 mr-1" />
-                          Edit
+                          <Edit className="h-3 w-3 md:mr-1" />
+                          <span className="hidden md:inline">Edit</span>
                         </Button>
                       </div>
                     </div>
@@ -124,7 +128,7 @@ export default function AdminRoadmap() {
         {roadmapItems.map((item) => (
           <Card key={item.id} className="hover:shadow-md transition-shadow">
             <CardContent className="p-6">
-              <div className="flex items-start justify-between">
+              <div className="flex flex-col md:flex-row md:items-start md:justify-between">
                 <div className="flex-1 space-y-2">
                   <div className="flex items-center space-x-3">
                     <h3 className="font-semibold">{item.title}</h3>
@@ -153,19 +157,23 @@ export default function AdminRoadmap() {
                     </span>
                   </div>
                 </div>
-                <div className="flex items-center space-x-2 ml-4">
+                <div className="flex items-center space-x-1 md:space-x-2 ml-0 md:ml-4 mt-3 md:mt-0">
                   <Button
                     variant="outline"
+                    size="sm"
                     onClick={() => handleViewItem(item)}
+                    className="min-h-[40px] text-xs md:text-sm"
                   >
-                    <Eye className="h-4 w-4 mr-1" />
+                    <Eye className="h-3 md:h-4 w-3 md:w-4 mr-1" />
                     View
                   </Button>
                   <Button
                     variant="outline"
+                    size="sm"
                     onClick={() => handleEditItem(item)}
+                    className="min-h-[40px] text-xs md:text-sm"
                   >
-                    <Edit className="h-4 w-4 mr-1" />
+                    <Edit className="h-3 md:h-4 w-3 md:w-4 mr-1" />
                     Edit
                   </Button>
                 </div>
@@ -181,31 +189,34 @@ export default function AdminRoadmap() {
     <Layout title="Roadmap Management">
       <div className="space-y-6">
         {/* Header */}
-        <div className="flex justify-between items-center">
-          <div>
-            <h1 className="text-2xl font-bold text-gray-900">Roadmap Panel</h1>
-            <p className="text-gray-600">Manage and track roadmap items across different phases</p>
+        <div className="flex flex-col space-y-4 md:flex-row md:justify-between md:items-center md:space-y-0">
+          <div className="text-center md:text-left">
+            <h1 className="text-xl md:text-2xl font-bold text-gray-900">Roadmap Panel</h1>
+            <p className="text-sm md:text-base text-gray-600">Manage and track roadmap items across different phases</p>
           </div>
-          <div className="flex items-center space-x-3">
+          <div className="flex flex-col space-y-3 md:flex-row md:items-center md:space-y-0 md:space-x-3">
             <div className="flex items-center bg-gray-100 rounded-lg p-1">
               <Button
                 variant={viewMode === 'kanban' ? 'default' : 'ghost'}
                 onClick={() => setViewMode('kanban')}
+                className="text-xs md:text-sm min-h-[40px]"
               >
-                <Kanban className="mr-2 h-4 w-4" />
+                <Kanban className="mr-1 md:mr-2 h-3 md:h-4 w-3 md:w-4" />
                 Kanban
               </Button>
               <Button
                 variant={viewMode === 'list' ? 'default' : 'ghost'}
                 onClick={() => setViewMode('list')}
+                className="text-xs md:text-sm min-h-[40px]"
               >
-                <List className="mr-2 h-4 w-4" />
+                <List className="mr-1 md:mr-2 h-3 md:h-4 w-3 md:w-4" />
                 List
               </Button>
             </div>
-            <Button onClick={() => setIsNewItemOpen(true)}>
+            <Button onClick={() => setIsNewItemOpen(true)} className="min-h-[44px]">
               <Plus className="mr-2 h-4 w-4" />
-              New Roadmap Item
+              <span className="hidden sm:inline">New Roadmap Item</span>
+              <span className="sm:hidden">New Item</span>
             </Button>
           </div>
         </div>
