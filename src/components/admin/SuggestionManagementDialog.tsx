@@ -32,6 +32,7 @@ export function SuggestionManagementDialog({
   const { updateSuggestion } = useAppData();
   const { toast } = useToast();
   const [status, setStatus] = useState<string>('');
+  const [priority, setPriority] = useState<string>('');
   const [adminNotes, setAdminNotes] = useState('');
   const [tags, setTags] = useState('');
 
@@ -39,6 +40,7 @@ export function SuggestionManagementDialog({
   useEffect(() => {
     if (suggestion) {
       setStatus(suggestion.status);
+      setPriority(suggestion.priority);
       setAdminNotes(suggestion.adminNotes || '');
       setTags(''); // Add tags field to Suggestion type if needed
     }
@@ -49,6 +51,7 @@ export function SuggestionManagementDialog({
   const handleSave = () => {
     updateSuggestion(suggestion.id, {
       status: status as any,
+      priority: priority as any,
       adminNotes: adminNotes.trim() || undefined,
     });
 
@@ -115,20 +118,36 @@ export function SuggestionManagementDialog({
 
           {/* Management Form */}
           <div className="space-y-4 border-t pt-4">
-            <div>
-              <Label htmlFor="status">Status</Label>
-              <Select value={status} onValueChange={setStatus}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select status" />
-                </SelectTrigger>
-                <SelectContent className="bg-white">
-                  <SelectItem value="pending">Pending</SelectItem>
-                  <SelectItem value="approved">Approved</SelectItem>
-                  <SelectItem value="in-progress">In Progress</SelectItem>
-                  <SelectItem value="completed">Completed</SelectItem>
-                  <SelectItem value="rejected">Rejected</SelectItem>
-                </SelectContent>
-              </Select>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <Label htmlFor="status">Status</Label>
+                <Select value={status} onValueChange={setStatus}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select status" />
+                  </SelectTrigger>
+                  <SelectContent className="bg-white">
+                    <SelectItem value="pending">Pending</SelectItem>
+                    <SelectItem value="approved">Approved</SelectItem>
+                    <SelectItem value="in-progress">In Progress</SelectItem>
+                    <SelectItem value="completed">Completed</SelectItem>
+                    <SelectItem value="rejected">Rejected</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div>
+                <Label htmlFor="priority">Priority</Label>
+                <Select value={priority} onValueChange={setPriority}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select priority" />
+                  </SelectTrigger>
+                  <SelectContent className="bg-white">
+                    <SelectItem value="low">Low Priority</SelectItem>
+                    <SelectItem value="medium">Medium Priority</SelectItem>
+                    <SelectItem value="high">High Priority</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
 
             <div>
