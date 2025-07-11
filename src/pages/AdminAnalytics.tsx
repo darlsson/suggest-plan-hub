@@ -28,8 +28,10 @@ import {
   Tags, 
   BarChart3,
   Calendar,
-  Download
+  Download,
+  ArrowLeft
 } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { useAppData } from '@/hooks/useAppData';
 
 const COLORS = {
@@ -126,13 +128,21 @@ export default function AdminAnalytics() {
       <div className="space-y-6">
         {/* Header */}
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-          <div>
-            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">
-              Suggestion Analytics
-            </h1>
-            <p className="text-gray-600 mt-1">
-              Insights and patterns from user suggestions
-            </p>
+          <div className="space-y-4">
+            <Link to="/admin/suggestions">
+              <Button variant="outline" size="sm" className="gap-2">
+                <ArrowLeft className="h-4 w-4" />
+                Back to Suggestions
+              </Button>
+            </Link>
+            <div>
+              <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">
+                Suggestion Analytics
+              </h1>
+              <p className="text-gray-600 mt-1">
+                Insights and patterns from user suggestions
+              </p>
+            </div>
           </div>
           <div className="flex items-center gap-3">
             <Select value={timeRange} onValueChange={setTimeRange}>
