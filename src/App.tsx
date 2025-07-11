@@ -10,6 +10,8 @@ import { ProtectedRoute } from './components/ProtectedRoute';
 import Index from './pages/Index';
 import Login from './pages/Login';
 import UserDashboard from './pages/UserDashboard';
+import EmployeeRoadmap from './pages/EmployeeRoadmap';
+import EmployeeSuggestions from './pages/EmployeeSuggestions';
 import AdminDashboard from './pages/AdminDashboard';
 import AdminSuggestions from './pages/AdminSuggestions';
 import AdminAnalytics from './pages/AdminAnalytics';
@@ -38,6 +40,16 @@ function App() {
                 <Route path="/dashboard" element={
                   <ProtectedRoute>
                     <UserDashboard />
+                  </ProtectedRoute>
+                } />
+                <Route path="/roadmap" element={
+                  <ProtectedRoute>
+                    <EmployeeRoadmap />
+                  </ProtectedRoute>
+                } />
+                <Route path="/my-suggestions" element={
+                  <ProtectedRoute>
+                    <EmployeeSuggestions />
                   </ProtectedRoute>
                 } />
                 <Route path="/settings" element={
