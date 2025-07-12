@@ -73,16 +73,6 @@ export default function EmployeeRoadmap() {
               <h3 className="font-semibold text-base md:text-lg">{column.title}</h3>
               <Badge variant="outline">{column.items.length}</Badge>
             </div>
-            {canSubmitSuggestion(column.status) && (
-              <Button 
-                onClick={() => setShowSuggestionForm(true)}
-                className="w-full mb-3"
-                size="sm"
-              >
-                <Plus className="h-4 w-4 mr-2" />
-                Submit Suggestion
-              </Button>
-            )}
             <div className="space-y-3 min-h-[300px] md:min-h-[400px] bg-gray-50 rounded-lg p-3 md:p-4">
               {column.items.map((item) => (
                 <Card key={item.id} className="hover:shadow-md transition-shadow">
@@ -97,26 +87,15 @@ export default function EmployeeRoadmap() {
                         <span className="text-xs text-gray-500">{item.quarter}</span>
                       </div>
                       <div className="flex items-center justify-end pt-2">
-                        <div className="flex gap-1">
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => handleViewItem(item)}
-                            className="min-h-[36px] text-xs"
-                          >
-                            <Eye className="h-3 w-3 md:mr-1" />
-                            <span className="hidden md:inline">View</span>
-                          </Button>
-                          {canSubmitSuggestion(item.status) && (
-                            <Button
-                              onClick={() => handleSuggestForItem(item)}
-                              size="sm"
-                              className="min-h-[36px] text-xs"
-                            >
-                              <Plus className="h-3 w-3" />
-                            </Button>
-                          )}
-                        </div>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => handleViewItem(item)}
+                          className="min-h-[36px] text-xs"
+                        >
+                          <Eye className="h-3 w-3 md:mr-1" />
+                          <span className="hidden md:inline">View</span>
+                        </Button>
                       </div>
                     </div>
                   </CardContent>
@@ -174,16 +153,6 @@ export default function EmployeeRoadmap() {
                     <Eye className="h-3 md:h-4 w-3 md:w-4 mr-1" />
                     View
                   </Button>
-                  {canSubmitSuggestion(item.status) && (
-                    <Button
-                      onClick={() => handleSuggestForItem(item)}
-                      size="sm"
-                      className="min-h-[40px] text-xs md:text-sm"
-                    >
-                      <Plus className="h-3 md:h-4 w-3 md:w-4 mr-1" />
-                      Suggest
-                    </Button>
-                  )}
                 </div>
               </div>
             </CardContent>
@@ -202,29 +171,22 @@ export default function EmployeeRoadmap() {
             <h1 className="text-xl md:text-2xl font-bold text-gray-900">Roadmap</h1>
             <p className="text-sm md:text-base text-gray-600">View planned features and submit suggestions for active phases</p>
           </div>
-          <div className="flex flex-col space-y-3 md:flex-row md:items-center md:space-y-0 md:space-x-3">
-            <div className="flex items-center bg-gray-100 rounded-lg p-1">
-              <Button
-                variant={viewMode === 'kanban' ? 'default' : 'ghost'}
-                onClick={() => setViewMode('kanban')}
-                className="text-xs md:text-sm min-h-[40px]"
-              >
-                <Kanban className="mr-1 md:mr-2 h-3 md:h-4 w-3 md:w-4" />
-                Kanban
-              </Button>
-              <Button
-                variant={viewMode === 'list' ? 'default' : 'ghost'}
-                onClick={() => setViewMode('list')}
-                className="text-xs md:text-sm min-h-[40px]"
-              >
-                <List className="mr-1 md:mr-2 h-3 md:h-4 w-3 md:w-4" />
-                List
-              </Button>
-            </div>
-            <Button onClick={() => setShowSuggestionForm(true)} className="min-h-[44px]">
-              <Plus className="mr-2 h-4 w-4" />
-              <span className="hidden sm:inline">Submit Suggestion</span>
-              <span className="sm:hidden">Suggest</span>
+          <div className="flex items-center bg-gray-100 rounded-lg p-1">
+            <Button
+              variant={viewMode === 'kanban' ? 'default' : 'ghost'}
+              onClick={() => setViewMode('kanban')}
+              className="text-xs md:text-sm min-h-[40px]"
+            >
+              <Kanban className="mr-1 md:mr-2 h-3 md:h-4 w-3 md:w-4" />
+              Kanban
+            </Button>
+            <Button
+              variant={viewMode === 'list' ? 'default' : 'ghost'}
+              onClick={() => setViewMode('list')}
+              className="text-xs md:text-sm min-h-[40px]"
+            >
+              <List className="mr-1 md:mr-2 h-3 md:h-4 w-3 md:w-4" />
+              List
             </Button>
           </div>
         </div>
