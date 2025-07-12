@@ -17,6 +17,7 @@ export default function EmployeeRoadmap() {
   const [viewMode, setViewMode] = useState<ViewMode>('kanban');
   const [selectedItem, setSelectedItem] = useState<RoadmapItem | null>(null);
   const [showSuggestionForm, setShowSuggestionForm] = useState(false);
+  const [suggestionForItem, setSuggestionForItem] = useState<RoadmapItem | null>(null);
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -50,6 +51,11 @@ export default function EmployeeRoadmap() {
 
   const canSubmitSuggestion = (status: string) => {
     return status === 'planned' || status === 'in-progress';
+  };
+
+  const handleSuggestForItem = (item: RoadmapItem) => {
+    setSuggestionForItem(item);
+    setShowSuggestionForm(true);
   };
 
   const renderKanbanView = () => {
@@ -91,15 +97,26 @@ export default function EmployeeRoadmap() {
                         <span className="text-xs text-gray-500">{item.quarter}</span>
                       </div>
                       <div className="flex items-center justify-end pt-2">
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => handleViewItem(item)}
-                          className="min-h-[36px] text-xs"
-                        >
-                          <Eye className="h-3 w-3 md:mr-1" />
-                          <span className="hidden md:inline">View</span>
-                        </Button>
+                        <div className="flex gap-1">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => handleViewItem(item)}
+                            className="min-h-[36px] text-xs"
+                          >
+                            <Eye className="h-3 w-3 md:mr-1" />
+                            <span className="hidden md:inline">View</span>
+                          </Button>
+                          {canSubmitSuggestion(item.status) && (
+                            <Button
+                              onClick={() => handleSuggestForItem(item)}
+                              size="sm"
+                              className="min-h-[36px] text-xs"
+                            >
+                              <Plus className="h-3 w-3" />
+                            </Button>
+                          )}
+                        </div>
                       </div>
                     </div>
                   </CardContent>
@@ -159,7 +176,7 @@ export default function EmployeeRoadmap() {
                   </Button>
                   {canSubmitSuggestion(item.status) && (
                     <Button
-                      onClick={() => setShowSuggestionForm(true)}
+                      onClick={() => handleSuggestForItem(item)}
                       size="sm"
                       className="min-h-[40px] text-xs md:text-sm"
                     >
@@ -223,13 +240,23 @@ export default function EmployeeRoadmap() {
         />
 
         {/* Suggestion Form Dialog */}
-        <Dialog open={showSuggestionForm} onOpenChange={setShowSuggestionForm}>
+        <Dialog open={showSuggestionForm} onOpenChange={(open) => {
+          setShowSuggestionForm(open);
+          if (!open) setSuggestionForItem(null);
+        }}>
           <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
             <DialogHeader>
-              <DialogTitle>Submit New Suggestion</DialogTitle>
+              <DialogTitle>
+                {suggestionForItem ? `Suggest for: ${suggestionForItem.title}` : 'Submit New Suggestion'}
+              </DialogTitle>
             </DialogHeader>
             <SuggestionForm 
-              onSuccess={() => setShowSuggestionForm(false)}
+              onSuccess={() => {
+                setShowSuggestionForm(false);
+                setSuggestionForItem(null);
+              }}
+              roadmapItemId={suggestionForItem?.id}
+              roadmapItemTitle={suggestionForItem?.title}
             />
           </DialogContent>
         </Dialog>

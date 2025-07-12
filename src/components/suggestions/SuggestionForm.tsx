@@ -11,6 +11,8 @@ import { Paperclip, X, File, Image, Video } from 'lucide-react';
 
 interface SuggestionFormProps {
   onSuccess?: () => void;
+  roadmapItemId?: string;
+  roadmapItemTitle?: string;
 }
 
 interface AttachedFile {
@@ -19,10 +21,12 @@ interface AttachedFile {
   type: 'image' | 'video' | 'document';
 }
 
-export function SuggestionForm({ onSuccess }: SuggestionFormProps) {
+export function SuggestionForm({ onSuccess, roadmapItemId, roadmapItemTitle }: SuggestionFormProps) {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
-  const [category, setCategory] = useState<'feature' | 'improvement' | 'bug' | 'other'>('feature');
+  const [category, setCategory] = useState<'feature' | 'improvement' | 'bug' | 'other' | 'roadmap'>(() => 
+    roadmapItemId ? 'roadmap' : 'feature'
+  );
   const [attachedFiles, setAttachedFiles] = useState<AttachedFile[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   
@@ -106,7 +110,7 @@ export function SuggestionForm({ onSuccess }: SuggestionFormProps) {
       // Reset form
       setTitle('');
       setDescription('');
-      setCategory('feature');
+      setCategory(roadmapItemId ? 'roadmap' : 'feature');
       setAttachedFiles([]);
       
       onSuccess?.();
@@ -134,9 +138,22 @@ export function SuggestionForm({ onSuccess }: SuggestionFormProps) {
         />
       </div>
 
+      {roadmapItemId && (
+        <div>
+          <Label>Related Roadmap Item</Label>
+          <div className="p-3 bg-muted rounded-md">
+            <span className="text-sm font-medium">{roadmapItemTitle}</span>
+          </div>
+        </div>
+      )}
+
       <div>
         <Label htmlFor="category">Category</Label>
-        <Select value={category} onValueChange={(value: any) => setCategory(value)}>
+        <Select 
+          value={category} 
+          onValueChange={(value: any) => setCategory(value)}
+          disabled={!!roadmapItemId}
+        >
           <SelectTrigger>
             <SelectValue placeholder="Select category" />
           </SelectTrigger>
@@ -145,6 +162,7 @@ export function SuggestionForm({ onSuccess }: SuggestionFormProps) {
             <SelectItem value="improvement">Improvement</SelectItem>
             <SelectItem value="bug">Bug Report</SelectItem>
             <SelectItem value="other">Other</SelectItem>
+            {roadmapItemId && <SelectItem value="roadmap">Roadmap Suggestion</SelectItem>}
           </SelectContent>
         </Select>
       </div>

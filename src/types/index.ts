@@ -13,7 +13,7 @@ export interface Suggestion {
   id: string;
   title: string;
   description: string;
-  category: 'feature' | 'improvement' | 'bug' | 'other';
+  category: 'feature' | 'improvement' | 'bug' | 'other' | 'roadmap';
   status: 'pending' | 'approved' | 'in-progress' | 'completed' | 'rejected';
   priority: 'low' | 'medium' | 'high';
   authorId: string;
