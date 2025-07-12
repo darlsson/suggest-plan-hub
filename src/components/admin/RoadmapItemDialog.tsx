@@ -2,8 +2,10 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Calendar, User, Target, Clock } from 'lucide-react';
+import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/components/ui/hover-card';
+import { Calendar, User, Target, Clock, MessageSquare } from 'lucide-react';
 import { RoadmapItem } from '@/types';
+import { useAppData } from '@/hooks/useAppData';
 
 interface RoadmapItemDialogProps {
   roadmapItem: RoadmapItem | null;
@@ -12,7 +14,29 @@ interface RoadmapItemDialogProps {
 }
 
 export function RoadmapItemDialog({ roadmapItem, open, onOpenChange }: RoadmapItemDialogProps) {
+  const { suggestions } = useAppData();
+  
   if (!roadmapItem) return null;
+
+  // Get the actual suggestion objects from the IDs
+  const relatedSuggestions = suggestions.filter(suggestion => 
+    roadmapItem.relatedSuggestions.includes(suggestion.id)
+  );
+
+  const getCategoryColor = (category: string) => {
+    switch (category) {
+      case 'feature':
+        return 'bg-blue-100 text-blue-800';
+      case 'improvement':
+        return 'bg-green-100 text-green-800';
+      case 'bug':
+        return 'bg-red-100 text-red-800';
+      case 'roadmap':
+        return 'bg-purple-100 text-purple-800';
+      default:
+        return 'bg-gray-100 text-gray-800';
+    }
+  };
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -114,19 +138,54 @@ export function RoadmapItemDialog({ roadmapItem, open, onOpenChange }: RoadmapIt
               </Card>
             )}
 
-            <Card>
-              <CardContent className="pt-6">
-                <div className="flex items-center space-x-3">
-                  <Target className="h-5 w-5 text-purple-600" />
-                  <div>
-                    <p className="text-sm font-medium text-gray-900">Related Suggestions</p>
-                    <p className="text-sm text-gray-600">
-                      {roadmapItem.relatedSuggestions.length} linked
-                    </p>
+            <HoverCard>
+              <HoverCardTrigger asChild>
+                <Card className="cursor-pointer hover:bg-gray-50 transition-colors">
+                  <CardContent className="pt-6">
+                    <div className="flex items-center space-x-3">
+                      <Target className="h-5 w-5 text-purple-600" />
+                      <div>
+                        <p className="text-sm font-medium text-gray-900">Related Suggestions</p>
+                        <p className="text-sm text-gray-600">
+                          {roadmapItem.relatedSuggestions.length} linked
+                        </p>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </HoverCardTrigger>
+              <HoverCardContent className="w-80 z-50 bg-background">
+                <div className="space-y-3">
+                  <div className="flex items-center space-x-2">
+                    <MessageSquare className="h-4 w-4 text-purple-600" />
+                    <h4 className="text-sm font-semibold">Related Suggestions</h4>
                   </div>
+                  {relatedSuggestions.length === 0 ? (
+                    <p className="text-sm text-muted-foreground">No suggestions linked</p>
+                  ) : (
+                    <div className="space-y-3">
+                      {relatedSuggestions.map((suggestion) => (
+                        <div key={suggestion.id} className="border rounded-lg p-3 space-y-2">
+                          <div className="flex items-start justify-between">
+                            <h5 className="text-sm font-medium line-clamp-1">{suggestion.title}</h5>
+                            <Badge className={getCategoryColor(suggestion.category)} variant="outline">
+                              {suggestion.category}
+                            </Badge>
+                          </div>
+                          <p className="text-xs text-muted-foreground line-clamp-2">
+                            {suggestion.description}
+                          </p>
+                          <div className="flex items-center justify-between text-xs text-muted-foreground">
+                            <span>by {suggestion.authorName}</span>
+                            <span>{suggestion.votes} votes</span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
-              </CardContent>
-            </Card>
+              </HoverCardContent>
+            </HoverCard>
           </div>
 
           {/* Created Date */}
