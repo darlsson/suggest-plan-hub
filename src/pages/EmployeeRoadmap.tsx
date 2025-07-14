@@ -18,6 +18,7 @@ export default function EmployeeRoadmap() {
   const [selectedItem, setSelectedItem] = useState<RoadmapItem | null>(null);
   const [showSuggestionForm, setShowSuggestionForm] = useState(false);
   const [suggestionForItem, setSuggestionForItem] = useState<RoadmapItem | null>(null);
+  const [expandedColumns, setExpandedColumns] = useState<Record<string, boolean>>({});
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -65,66 +66,88 @@ export default function EmployeeRoadmap() {
       { status: 'completed', title: 'Completed', items: roadmapItems.filter(item => item.status === 'completed') }
     ];
 
+    const toggleColumnExpansion = (status: string) => {
+      setExpandedColumns(prev => ({
+        ...prev,
+        [status]: !prev[status]
+      }));
+    };
+
     return (
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
-        {columns.map((column) => (
-          <div key={column.status} className="space-y-4">
-            <div className="flex items-center justify-between">
-              <h3 className="font-semibold text-base md:text-lg">{column.title}</h3>
-              <Badge variant="outline">{column.items.length}</Badge>
-            </div>
-            {canSubmitSuggestion(column.status) && (
-              <Button 
-                onClick={() => setShowSuggestionForm(true)}
-                className="w-full mb-3"
-                size="sm"
-              >
-                <Plus className="h-4 w-4 mr-2" />
-                Submit Suggestion
-              </Button>
-            )}
-            <div className="space-y-3 min-h-[300px] md:min-h-[400px] bg-gray-50 rounded-lg p-3 md:p-4">
-              {column.items.map((item) => (
-                <Card key={item.id} className="hover:shadow-md transition-shadow">
-                  <CardContent className="p-4">
-                    <div className="space-y-2">
-                      <h4 className="font-medium text-sm">{item.title}</h4>
-                      <p className="text-xs text-gray-600 line-clamp-2">{item.description}</p>
-                      <div className="flex items-center justify-between">
-                        <Badge className={getPriorityColor(item.priority)}>
-                          {item.priority}
-                        </Badge>
-                        <span className="text-xs text-gray-500">{item.quarter}</span>
-                      </div>
-                      <div className="flex items-center justify-end pt-2">
-                        <div className="flex gap-1">
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => handleViewItem(item)}
-                            className="min-h-[36px] text-xs"
-                          >
-                            <Eye className="h-3 w-3 md:mr-1" />
-                            <span className="hidden md:inline">View</span>
-                          </Button>
-                          {canSubmitSuggestion(item.status) && (
+        {columns.map((column) => {
+          const isExpanded = expandedColumns[column.status];
+          const displayItems = isExpanded ? column.items : column.items.slice(0, 4);
+          const hasMore = column.items.length > 4;
+
+          return (
+            <div key={column.status} className="space-y-4">
+              <div className="flex items-center justify-between">
+                <h3 className="font-semibold text-base md:text-lg">{column.title}</h3>
+                <Badge variant="outline">{column.items.length}</Badge>
+              </div>
+              {canSubmitSuggestion(column.status) && (
+                <Button 
+                  onClick={() => setShowSuggestionForm(true)}
+                  className="w-full mb-3"
+                  size="sm"
+                >
+                  <Plus className="h-4 w-4 mr-2" />
+                  Submit Suggestion
+                </Button>
+              )}
+              <div className="space-y-3 min-h-[300px] md:min-h-[400px] bg-gray-50 rounded-lg p-3 md:p-4">
+                {displayItems.map((item) => (
+                  <Card key={item.id} className="hover:shadow-md transition-shadow">
+                    <CardContent className="p-4">
+                      <div className="space-y-2">
+                        <h4 className="font-medium text-sm">{item.title}</h4>
+                        <p className="text-xs text-gray-600 line-clamp-2">{item.description}</p>
+                        <div className="flex items-center justify-between">
+                          <Badge className={getPriorityColor(item.priority)}>
+                            {item.priority}
+                          </Badge>
+                          <span className="text-xs text-gray-500">{item.quarter}</span>
+                        </div>
+                        <div className="flex items-center justify-end pt-2">
+                          <div className="flex gap-1">
                             <Button
-                              onClick={() => handleSuggestForItem(item)}
+                              variant="outline"
                               size="sm"
+                              onClick={() => handleViewItem(item)}
                               className="min-h-[36px] text-xs"
                             >
-                              <Plus className="h-3 w-3" />
+                              <Eye className="h-3 w-3 md:mr-1" />
+                              <span className="hidden md:inline">View</span>
                             </Button>
-                          )}
+                            {canSubmitSuggestion(item.status) && (
+                              <Button
+                                onClick={() => handleSuggestForItem(item)}
+                                size="sm"
+                                className="min-h-[36px] text-xs"
+                              >
+                                <Plus className="h-3 w-3" />
+                              </Button>
+                            )}
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
+                    </CardContent>
+                  </Card>
+                ))}
+                {hasMore && (
+                  <Button
+                    variant="ghost"
+                    onClick={() => toggleColumnExpansion(column.status)}
+                    className="w-full mt-2 text-xs"
+                  >
+                    {isExpanded ? 'Show Less' : `View More (${column.items.length - 4} more)`}
+                  </Button>
+                )}
+              </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
     );
   };
