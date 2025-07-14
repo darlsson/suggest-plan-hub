@@ -17,6 +17,9 @@ interface AppDataContextType {
   updateUser: (id: string, updates: Partial<User>) => void;
   deleteUser: (id: string) => void;
   getAvailableTags: () => string[];
+  startVoteSession: (suggestionId: string) => void;
+  endVoteSession: (suggestionId: string) => void;
+  submitVote: (suggestionId: string, voteType: 'up' | 'down') => void;
 }
 
 const AppDataContext = createContext<AppDataContextType | undefined>(undefined);
@@ -198,6 +201,87 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
     return allTags.sort();
   };
 
+  const startVoteSession = (suggestionId: string) => {
+    const user = auth.user;
+    if (!user || user.role !== 'admin') return;
+
+    setSuggestions(prev => prev.map(suggestion => {
+      if (suggestion.id === suggestionId) {
+        return {
+          ...suggestion,
+          voteSession: {
+            id: Date.now().toString(),
+            isActive: true,
+            startedAt: new Date().toISOString(),
+            startedBy: user.id,
+            votes: []
+          }
+        };
+      }
+      return suggestion;
+    }));
+  };
+
+  const endVoteSession = (suggestionId: string) => {
+    const user = auth.user;
+    if (!user || user.role !== 'admin') return;
+
+    setSuggestions(prev => prev.map(suggestion => {
+      if (suggestion.id === suggestionId && suggestion.voteSession) {
+        return {
+          ...suggestion,
+          voteSession: {
+            ...suggestion.voteSession,
+            isActive: false,
+            endedAt: new Date().toISOString()
+          }
+        };
+      }
+      return suggestion;
+    }));
+  };
+
+  const submitVote = (suggestionId: string, voteType: 'up' | 'down') => {
+    const user = auth.user;
+    if (!user) return;
+
+    setSuggestions(prev => prev.map(suggestion => {
+      if (suggestion.id === suggestionId && suggestion.voteSession?.isActive) {
+        // Check if user already voted
+        const existingVoteIndex = suggestion.voteSession.votes.findIndex(
+          vote => vote.userId === user.id
+        );
+
+        const newVote = {
+          id: Date.now().toString(),
+          userId: user.id,
+          userName: user.name,
+          voteType,
+          createdAt: new Date().toISOString()
+        };
+
+        let updatedVotes;
+        if (existingVoteIndex !== -1) {
+          // Replace existing vote
+          updatedVotes = [...suggestion.voteSession.votes];
+          updatedVotes[existingVoteIndex] = newVote;
+        } else {
+          // Add new vote
+          updatedVotes = [...suggestion.voteSession.votes, newVote];
+        }
+
+        return {
+          ...suggestion,
+          voteSession: {
+            ...suggestion.voteSession,
+            votes: updatedVotes
+          }
+        };
+      }
+      return suggestion;
+    }));
+  };
+
   return (
     <AppDataContext.Provider value={{
       suggestions,
@@ -213,6 +297,9 @@ export function AppDataProvider({ children }: { children: ReactNode }) {
       updateUser,
       deleteUser,
       getAvailableTags,
+      startVoteSession,
+      endVoteSession,
+      submitVote,
     }}>
       {children}
     </AppDataContext.Provider>

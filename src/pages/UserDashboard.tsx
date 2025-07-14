@@ -5,8 +5,9 @@ import { Button } from '@/components/ui/button';
 import { useAppData } from '@/hooks/useAppData';
 import { useAuth } from '@/hooks/useAuth';
 import { SuggestionCard } from '@/components/suggestions/SuggestionCard';
+import { VotingCard } from '@/components/suggestions/VotingCard';
 import { Link } from 'react-router-dom';
-import { Plus, FileText, Calendar, CheckCircle } from 'lucide-react';
+import { Plus, FileText, Calendar, CheckCircle, Vote } from 'lucide-react';
 
 export default function UserDashboard() {
   const { auth } = useAuth();
@@ -15,6 +16,7 @@ export default function UserDashboard() {
   const userSuggestions = suggestions.filter(s => s.authorId === auth.user?.id);
   const recentSuggestions = userSuggestions.slice(0, 3);
   const completedRoadmapItems = roadmapItems.filter(item => item.status === 'completed');
+  const activeVotes = suggestions.filter(s => s.voteSession?.isActive);
 
   const stats = [
     {
@@ -78,6 +80,28 @@ export default function UserDashboard() {
             </Card>
           ))}
         </div>
+
+        {/* Active Votes Section */}
+        {activeVotes.length > 0 && (
+          <Card className="bg-gradient-to-r from-blue-50 to-purple-50 border-blue-200">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Vote className="h-5 w-5 text-blue-600" />
+                Active Votes
+              </CardTitle>
+              <CardDescription>
+                Vote on suggestions that need your feedback
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                {activeVotes.map((suggestion) => (
+                  <VotingCard key={suggestion.id} suggestion={suggestion} />
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        )}
 
         {/* Recent Suggestions */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">

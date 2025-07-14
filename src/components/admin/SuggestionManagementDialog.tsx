@@ -30,7 +30,7 @@ export function SuggestionManagementDialog({
   open, 
   onOpenChange 
 }: SuggestionManagementDialogProps) {
-  const { updateSuggestion } = useAppData();
+  const { updateSuggestion, startVoteSession, endVoteSession } = useAppData();
   const { toast } = useToast();
   const [status, setStatus] = useState<string>('');
   const [priority, setPriority] = useState<string>('');
@@ -48,6 +48,22 @@ export function SuggestionManagementDialog({
   }, [suggestion]);
 
   if (!suggestion) return null;
+
+  const handleStartVote = () => {
+    startVoteSession(suggestion.id);
+    toast({
+      title: "Vote Started",
+      description: "Employees can now vote on this suggestion.",
+    });
+  };
+
+  const handleEndVote = () => {
+    endVoteSession(suggestion.id);
+    toast({
+      title: "Vote Ended",
+      description: "Voting for this suggestion has been closed.",
+    });
+  };
 
   const handleSave = () => {
     updateSuggestion(suggestion.id, {
@@ -130,6 +146,36 @@ export function SuggestionManagementDialog({
                 </div>
               </div>
             )}
+            {/* Display voting results if vote session exists */}
+            {suggestion.voteSession && (
+              <div>
+                <h4 className="font-semibold mb-2">Voting Results</h4>
+                <div className="bg-gray-50 p-3 rounded-lg space-y-2">
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm">Status:</span>
+                    <Badge variant={suggestion.voteSession.isActive ? "default" : "secondary"}>
+                      {suggestion.voteSession.isActive ? "Active" : "Ended"}
+                    </Badge>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm">Total Votes:</span>
+                    <span className="font-medium">{suggestion.voteSession.votes.length}</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm">Thumbs Up:</span>
+                    <span className="font-medium text-green-600">
+                      {suggestion.voteSession.votes.filter(v => v.voteType === 'up').length}
+                    </span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm">Thumbs Down:</span>
+                    <span className="font-medium text-red-600">
+                      {suggestion.voteSession.votes.filter(v => v.voteType === 'down').length}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Management Form */}
@@ -188,13 +234,26 @@ export function SuggestionManagementDialog({
           </div>
         </div>
 
-        <DialogFooter>
-          <Button variant="outline" onClick={() => onOpenChange(false)}>
-            Cancel
-          </Button>
-          <Button onClick={handleSave}>
-            Save Changes
-          </Button>
+        <DialogFooter className="flex justify-between">
+          <div className="flex gap-2">
+            {!suggestion.voteSession?.isActive ? (
+              <Button variant="outline" onClick={handleStartVote}>
+                Start Vote
+              </Button>
+            ) : (
+              <Button variant="outline" onClick={handleEndVote}>
+                End Vote
+              </Button>
+            )}
+          </div>
+          <div className="flex gap-2">
+            <Button variant="outline" onClick={() => onOpenChange(false)}>
+              Cancel
+            </Button>
+            <Button onClick={handleSave}>
+              Save Changes
+            </Button>
+          </div>
         </DialogFooter>
       </DialogContent>
     </Dialog>

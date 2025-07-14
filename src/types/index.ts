@@ -9,6 +9,14 @@ export interface User {
   lastLogin?: string;
 }
 
+export interface Vote {
+  id: string;
+  userId: string;
+  userName: string;
+  voteType: 'up' | 'down';
+  createdAt: string;
+}
+
 export interface Suggestion {
   id: string;
   title: string;
@@ -23,6 +31,14 @@ export interface Suggestion {
   votes: number;
   adminNotes?: string;
   tags?: string[];
+  voteSession?: {
+    id: string;
+    isActive: boolean;
+    startedAt: string;
+    endedAt?: string;
+    startedBy: string;
+    votes: Vote[];
+  };
 }
 
 export interface RoadmapItem {
@@ -60,4 +76,7 @@ export interface AppContextType {
   createUser: (user: Omit<User, 'id' | 'createdAt'>) => void;
   updateUser: (id: string, updates: Partial<User>) => void;
   deleteUser: (id: string) => void;
+  startVoteSession: (suggestionId: string) => void;
+  endVoteSession: (suggestionId: string) => void;
+  submitVote: (suggestionId: string, voteType: 'up' | 'down') => void;
 }
