@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -46,7 +46,15 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8 relative">
+      {/* Logo placeholder in top right corner */}
+      <Link 
+        to="/" 
+        className="absolute top-6 right-6 flex items-center justify-center w-12 h-12 bg-primary rounded-lg hover:bg-primary/90 transition-colors"
+      >
+        <span className="text-white font-bold text-xl">S</span>
+      </Link>
+      
       <div className="max-w-md w-full">
         <Card>
           <CardHeader className="text-center">
