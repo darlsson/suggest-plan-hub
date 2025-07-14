@@ -59,7 +59,7 @@ const Index = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center">
-              <h1 className="text-2xl font-bold text-primary">SuggestPlan Hub</h1>
+              <h1 className="text-2xl font-bold text-primary">Estus</h1>
             </div>
             <div className="flex items-center space-x-4">
               <Button variant="ghost" asChild>
@@ -120,7 +120,7 @@ const Index = () => {
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold mb-4">See It In Action</h2>
             <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-              Discover how SuggestPlan Hub streamlines suggestion management and empowers data-driven decisions
+              Discover how Estus streamlines suggestion management and empowers data-driven decisions
             </p>
           </div>
           
@@ -304,7 +304,7 @@ const Index = () => {
                 <div className="space-y-4">
                   <div className="flex items-center">
                     <Mail className="h-5 w-5 text-primary mr-3" />
-                    <span>hello@suggestplanhub.com</span>
+                    <span>hello@estus.com</span>
                   </div>
                   <div className="flex items-center">
                     <Phone className="h-5 w-5 text-primary mr-3" />
@@ -341,7 +341,7 @@ const Index = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid md:grid-cols-4 gap-8">
             <div className="col-span-2">
-              <h3 className="text-2xl font-bold text-primary mb-4">SuggestPlan Hub</h3>
+              <h3 className="text-2xl font-bold text-primary mb-4">Estus</h3>
               <p className="text-muted-foreground mb-4">
                 Empowering organizations to harness the collective intelligence of their teams 
                 through innovative suggestion and roadmap management.
@@ -382,7 +382,7 @@ const Index = () => {
           
           <div className="border-t mt-8 pt-8 flex flex-col sm:flex-row justify-between items-center">
             <p className="text-muted-foreground text-sm">
-              © 2024 SuggestPlan Hub. All rights reserved.
+              © 2024 Estus. All rights reserved.
             </p>
             <div className="flex space-x-6 text-sm text-muted-foreground mt-4 sm:mt-0">
               <Link to="#" className="hover:text-primary">Privacy Policy</Link>

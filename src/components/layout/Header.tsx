@@ -27,6 +27,9 @@ export function Header({ title }: HeaderProps) {
     <header className="bg-white border-b border-gray-200 px-6 py-4">
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-4">
+          <Link to="/" className="flex items-center justify-center w-10 h-10 bg-primary rounded-lg hover:bg-primary/90 transition-colors mr-3">
+            <span className="text-white font-bold text-lg">E</span>
+          </Link>
           <h1 className="text-2xl font-bold text-gray-900">{title}</h1>
           {isViewingAsUser && originalUser && (
             <div className="bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full text-sm font-medium">

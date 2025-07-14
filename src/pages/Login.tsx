@@ -52,13 +52,13 @@ export default function Login() {
         to="/" 
         className="absolute top-6 right-6 flex items-center justify-center w-12 h-12 bg-primary rounded-lg hover:bg-primary/90 transition-colors"
       >
-        <span className="text-white font-bold text-xl">S</span>
+        <span className="text-white font-bold text-xl">E</span>
       </Link>
       
       <div className="max-w-md w-full">
         <Card>
           <CardHeader className="text-center">
-            <CardTitle className="text-2xl font-bold">Roadmap Hub</CardTitle>
+            <CardTitle className="text-2xl font-bold">Estus</CardTitle>
             <CardDescription>
               Sign in to your account to continue
             </CardDescription>

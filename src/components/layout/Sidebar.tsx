@@ -33,7 +33,7 @@ export function Sidebar() {
   return (
     <aside className="bg-gray-900 text-white w-64 min-h-screen">
       <div className="p-6">
-        <h2 className="text-xl font-bold">Roadmap Hub</h2>
+        <h2 className="text-xl font-bold">Estus</h2>
         <p className="text-gray-400 text-sm mt-1">
           {isAdmin ? 'Admin Panel' : 'Employee Portal'}
         </p>

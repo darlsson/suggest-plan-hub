@@ -51,7 +51,10 @@ export function AdminNavbar() {
     <nav className="bg-gray-900 text-white border-b border-gray-700">
       <div className="container mx-auto px-6">
         {/* Desktop Navigation */}
-        <div className="hidden md:flex space-x-8">
+        <div className="hidden md:flex items-center space-x-8">
+          <Link to="/" className="flex items-center justify-center w-8 h-8 bg-primary rounded-lg hover:bg-primary/90 transition-colors mr-4">
+            <span className="text-white font-bold text-sm">E</span>
+          </Link>
           {navItems.map((item) => (
             <Link
               key={item.name}
