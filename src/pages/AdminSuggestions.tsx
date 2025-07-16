@@ -8,7 +8,7 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { Filter, Search, BarChart3, Plus } from 'lucide-react';
+import { Filter, Search, BarChart3, Plus, Archive } from 'lucide-react';
 import { useAppData } from '@/hooks/useAppData';
 import { Suggestion } from '@/types';
 import { SuggestionManagementDialog } from '@/components/admin/SuggestionManagementDialog';
@@ -24,6 +24,7 @@ export default function AdminSuggestions() {
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const [typeFilter, setTypeFilter] = useState('all');
+  const [showArchived, setShowArchived] = useState(false);
 
   // Set initial filter from URL params
   useEffect(() => {
@@ -33,7 +34,11 @@ export default function AdminSuggestions() {
     }
   }, [searchParams]);
 
-  const filteredSuggestions = suggestions.filter((suggestion) => {
+  // Separate active and archived suggestions
+  const activeSuggestions = suggestions.filter(s => s.status !== 'completed' && s.status !== 'rejected');
+  const archivedSuggestions = suggestions.filter(s => s.status === 'completed' || s.status === 'rejected');
+  
+  const filteredSuggestions = (showArchived ? archivedSuggestions : activeSuggestions).filter((suggestion) => {
     const matchesSearch = suggestion.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          suggestion.description.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesStatus = statusFilter === 'all' || suggestion.status === statusFilter;
@@ -92,12 +97,23 @@ export default function AdminSuggestions() {
         {/* Header */}
         <div className="flex flex-col space-y-4 md:flex-row md:justify-between md:items-center md:space-y-0">
           <div className="text-center md:text-left">
-            <h2 className="text-xl md:text-2xl font-bold text-gray-900">All Suggestions</h2>
+            <h2 className="text-xl md:text-2xl font-bold text-gray-900">
+              {showArchived ? 'Archived Suggestions' : 'Active Suggestions'}
+            </h2>
             <p className="text-sm md:text-base text-gray-600">
-              {filteredSuggestions.length} of {suggestions.length}
+              {filteredSuggestions.length} of {showArchived ? archivedSuggestions.length : activeSuggestions.length}
+              {showArchived ? ' archived' : ' active'}
             </p>
           </div>
           <div className="flex flex-col space-y-2 md:flex-row md:gap-3 md:space-y-0">
+            <Button 
+              variant="outline" 
+              onClick={() => setShowArchived(!showArchived)}
+              className="flex items-center justify-center gap-2 min-h-[44px]"
+            >
+              <Archive className="h-4 w-4" />
+              {showArchived ? 'View Active' : 'View Archived'}
+            </Button>
             <Button 
               variant="outline" 
               onClick={handleViewAnalytics}
