@@ -47,10 +47,10 @@ export default function Login() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8 relative">
-      {/* Logo placeholder in top right corner */}
+      {/* Logo placeholder in top left corner */}
       <Link 
         to="/" 
-        className="absolute top-6 right-6 flex items-center justify-center w-12 h-12 bg-primary rounded-lg hover:bg-primary/90 transition-colors"
+        className="absolute top-6 left-6 flex items-center justify-center w-12 h-12 bg-primary rounded-lg hover:bg-primary/90 transition-colors"
       >
         <span className="text-white font-bold text-xl">E</span>
       </Link>
