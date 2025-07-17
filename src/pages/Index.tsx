@@ -59,7 +59,7 @@ const Index = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center">
-              <h1 className="text-2xl font-bold text-primary">GODA</h1>
+              <img src="/lovable-uploads/29b1b0b1-ba4e-40a4-9f9e-b5ff22a4c332.png" alt="GODA" className="h-8 w-auto" />
             </div>
             <div className="flex items-center space-x-4">
               <Button variant="ghost" asChild>

@@ -47,18 +47,20 @@ export default function Login() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8 relative">
-      {/* Logo placeholder in top left corner */}
+      {/* Logo in top left corner */}
       <Link 
         to="/" 
-        className="absolute top-6 left-6 flex items-center justify-center w-12 h-12 bg-primary rounded-lg hover:bg-primary/90 transition-colors"
+        className="absolute top-6 left-6 flex items-center justify-center hover:opacity-80 transition-opacity"
       >
-        <span className="text-white font-bold text-xl">E</span>
+        <img src="/lovable-uploads/29b1b0b1-ba4e-40a4-9f9e-b5ff22a4c332.png" alt="GODA" className="h-8 w-auto" />
       </Link>
       
       <div className="max-w-md w-full">
         <Card>
           <CardHeader className="text-center">
-            <CardTitle className="text-2xl font-bold">Estus</CardTitle>
+            <div className="flex justify-center mb-4">
+              <img src="/lovable-uploads/29b1b0b1-ba4e-40a4-9f9e-b5ff22a4c332.png" alt="GODA" className="h-12 w-auto" />
+            </div>
             <CardDescription>
               Sign in to your account to continue
             </CardDescription>
