@@ -41,7 +41,7 @@ export function EmployeeNavbar() {
   };
 
   return (
-    <nav className="bg-gray-900 text-white border-b border-gray-700">
+    <nav className="bg-primary text-primary-foreground border-b border-primary/20">
       <div className="container mx-auto px-6">
         {/* Desktop Navigation */}
         <div className="hidden md:flex items-center space-x-8">
@@ -52,8 +52,8 @@ export function EmployeeNavbar() {
               className={cn(
                 'flex items-center px-4 py-4 text-sm font-medium transition-colors border-b-2',
                 item.isActive
-                  ? 'text-white border-blue-500 bg-gray-800'
-                  : 'text-gray-300 border-transparent hover:text-white hover:border-gray-600'
+                  ? 'text-primary-foreground border-secondary bg-primary/20'
+                  : 'text-primary-foreground/80 border-transparent hover:text-primary-foreground hover:border-primary-foreground/30'
               )}
             >
               <item.icon className="mr-2 h-4 w-4" />
@@ -66,7 +66,7 @@ export function EmployeeNavbar() {
         <div className="flex md:hidden py-4">
           <Sheet open={open} onOpenChange={setOpen}>
             <SheetTrigger asChild>
-              <Button variant="ghost" size="sm" className="text-white hover:bg-gray-800">
+              <Button variant="ghost" size="sm" className="text-primary-foreground hover:bg-primary/20">
                 <Menu className="h-5 w-5" />
                 <span className="ml-2">Menu</span>
               </Button>
