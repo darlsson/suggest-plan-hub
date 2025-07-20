@@ -7,14 +7,20 @@ import { useAppData } from '@/hooks/useAppData';
 import { useAuth } from '@/hooks/useAuth';
 import { SuggestionCard } from '@/components/suggestions/SuggestionCard';
 import { SuggestionForm } from '@/components/suggestions/SuggestionForm';
-import { Plus, FileText } from 'lucide-react';
+import { Plus, FileText, Archive } from 'lucide-react';
 
 export default function EmployeeSuggestions() {
   const { auth } = useAuth();
   const { suggestions } = useAppData();
   const [showSuggestionForm, setShowSuggestionForm] = useState(false);
+  const [showArchived, setShowArchived] = useState(false);
 
   const userSuggestions = suggestions.filter(s => s.authorId === auth.user?.id);
+  
+  // Filter suggestions based on current view
+  const activeSuggestions = userSuggestions.filter(s => s.status !== 'completed' && s.status !== 'rejected');
+  const archivedSuggestions = userSuggestions.filter(s => s.status === 'completed' || s.status === 'rejected');
+  const displayedSuggestions = showArchived ? archivedSuggestions : activeSuggestions;
 
   const stats = [
     {
@@ -49,14 +55,33 @@ export default function EmployeeSuggestions() {
         {/* Header */}
         <div className="flex flex-col space-y-4 md:flex-row md:justify-between md:items-center md:space-y-0">
           <div className="text-center md:text-left">
-            <h1 className="text-xl md:text-2xl font-bold text-gray-900">My Suggestions</h1>
-            <p className="text-sm md:text-base text-gray-600">Submit new suggestions and track your existing ones</p>
+            <h1 className="text-xl md:text-2xl font-bold text-gray-900">
+              {showArchived ? 'My Archived Suggestions' : 'My Suggestions'}
+            </h1>
+            <p className="text-sm md:text-base text-gray-600">
+              {showArchived 
+                ? `View completed and rejected suggestions (${archivedSuggestions.length})`
+                : 'Submit new suggestions and track your existing ones'
+              }
+            </p>
           </div>
-          <Button onClick={() => setShowSuggestionForm(true)} className="min-h-[44px]">
-            <Plus className="mr-2 h-4 w-4" />
-            <span className="hidden sm:inline">Submit New Suggestion</span>
-            <span className="sm:hidden">New Suggestion</span>
-          </Button>
+          <div className="flex flex-col sm:flex-row gap-2">
+            <Button 
+              variant="outline" 
+              onClick={() => setShowArchived(!showArchived)}
+              className="min-h-[44px]"
+            >
+              <Archive className="mr-2 h-4 w-4" />
+              {showArchived ? 'View Active' : 'View Archived'}
+            </Button>
+            {!showArchived && (
+              <Button onClick={() => setShowSuggestionForm(true)} className="min-h-[44px]">
+                <Plus className="mr-2 h-4 w-4" />
+                <span className="hidden sm:inline">Submit New Suggestion</span>
+                <span className="sm:hidden">New Suggestion</span>
+              </Button>
+            )}
+          </div>
         </div>
 
         {/* Stats Grid */}
@@ -82,15 +107,20 @@ export default function EmployeeSuggestions() {
         {/* Suggestions List */}
         <Card>
           <CardHeader>
-            <CardTitle>Your Suggestions</CardTitle>
+            <CardTitle>
+              {showArchived ? 'Archived Suggestions' : 'Your Suggestions'}
+            </CardTitle>
             <CardDescription>
-              All suggestions you've submitted, organized by most recent
+              {showArchived 
+                ? 'Completed and rejected suggestions, organized by most recent'
+                : 'All suggestions you\'ve submitted, organized by most recent'
+              }
             </CardDescription>
           </CardHeader>
           <CardContent>
-            {userSuggestions.length > 0 ? (
+            {displayedSuggestions.length > 0 ? (
               <div className="space-y-4">
-                {userSuggestions
+                {displayedSuggestions
                   .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
                   .map((suggestion) => (
                     <SuggestionCard key={suggestion.id} suggestion={suggestion} />
