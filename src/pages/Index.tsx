@@ -326,11 +326,10 @@ const Index = () => {
                   <Button variant="outline" size="icon">
                     <Twitter className="h-4 w-4" />
                   </Button>
-                  <Button variant="outline" size="icon" onClick={(e) => {
-      e.preventDefault();
-      window.location.href='https://www.linkedin.com/company/goda-ab';
-      }} target="_blank">
-                    <Linkedin className="h-4 w-4" />
+                  <Button variant="outline" size="icon" asChild>
+                    <a href="https://www.linkedin.com/company/goda-ab" target="_blank" rel="noopener noreferrer">
+                      <Linkedin className="h-4 w-4" />
+                    </a>
                   </Button>
                 </div>
               </div>
