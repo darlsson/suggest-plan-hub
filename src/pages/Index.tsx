@@ -329,7 +329,7 @@ const Index = () => {
                   <Button variant="outline" size="icon" onClick={(e) => {
       e.preventDefault();
       window.location.href='https://www.linkedin.com/company/goda-ab';
-      }} target="blank">
+      }} target="_blank">
                     <Linkedin className="h-4 w-4" />
                   </Button>
                 </div>
